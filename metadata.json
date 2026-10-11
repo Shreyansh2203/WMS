@@ -1,0 +1,6 @@
+{
+  "name": "MIPS–WMS Inventory Reconciliation · AI Agent Console",
+  "description": "Lehigh Valley plant operations and automated reconciliation console resolving MIPS-WMS mismatches, freezer ghost lots, blind lines, and Oracle ODI sync gaps.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
