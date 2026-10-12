@@ -1,26 +1,15 @@
 import React, { useState } from 'react';
 import { DashboardView, Theme } from '../types';
 import {
-  LayoutDashboard,
-  Layers,
-  Archive,
-  Snowflake,
-  RefreshCw,
-  ClipboardList,
   Search,
   Plus,
   Sun,
   Moon,
-  Volume2,
-  VolumeX,
   Menu,
   X,
-  User,
-  Radio,
-  Clock,
+  ChevronDown,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { toggleAcousticFeedback, playTactileTick } from '../utils/audio';
 
 interface TopBarProps {
   currentView: DashboardView;
@@ -54,93 +43,70 @@ export const TopBar: React.FC<TopBarProps> = ({
   currentSupervisor,
   onSelectSupervisor,
   isLiveStreaming,
-  onToggleLiveStream,
   lastSyncTime,
   isSyncing,
   onRefresh,
 }) => {
-  const [isAudioActive, setIsAudioActive] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSupervisorMenuOpen, setIsSupervisorMenuOpen] = useState(false);
 
-  const handleAudioToggle = () => {
-    const newState = toggleAcousticFeedback();
-    setIsAudioActive(newState);
-    if (newState) playTactileTick();
-  };
-
-  const navItems: { id: DashboardView; label: string; icon: React.ElementType; badge?: number }[] = [
-    { id: 'topology', label: 'Overview', icon: LayoutDashboard },
-    { id: 'reconciliation', label: 'Queue', icon: Layers, badge: unresolvedCount },
-    { id: 'consolidate', label: 'Inventory Ledger', icon: Archive },
-    { id: 'freezer', label: 'Cold Storage', icon: Snowflake },
-    { id: 'odi_sync', label: 'Sync Pipeline', icon: RefreshCw },
-    { id: 'handoff', label: 'Shift Handover', icon: ClipboardList },
+  const navItems: { id: DashboardView; label: string; count?: number }[] = [
+    { id: 'topology', label: 'Overview' },
+    { id: 'reconciliation', label: 'Reconciliation Queue', count: unresolvedCount },
+    { id: 'consolidate', label: 'Inventory Ledger' },
+    { id: 'freezer', label: 'Cold Storage' },
+    { id: 'odi_sync', label: 'ERP Interface' },
+    { id: 'handoff', label: 'Shift Handover' },
   ];
 
   const shifts = [
-    { id: 'Shift 1 (06:00 - 14:00)', label: 'Shift 1 (Day 06-14)', lead: 'Dave Miller' },
-    { id: 'Shift 2 (14:00 - 22:00)', label: 'Shift 2 (Eve 14-22)', lead: 'Sarah Chen' },
-    { id: 'Shift 3 (22:00 - 06:00)', label: 'Shift 3 (Night 22-06)', lead: 'Marcus Brody' },
+    { id: 'Shift 1 (06:00 - 14:00)', label: 'Shift 1 (Day)', lead: 'Dave Miller' },
+    { id: 'Shift 2 (14:00 - 22:00)', label: 'Shift 2 (Evening)', lead: 'Sarah Chen' },
+    { id: 'Shift 3 (22:00 - 06:00)', label: 'Shift 3 (Night)', lead: 'Marcus Brody' },
   ];
 
-  const handleNavClick = (viewId: DashboardView) => {
-    playTactileTick();
-    onSelectView(viewId);
-    setIsMobileMenuOpen(false);
-  };
-
   return (
-    <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#0c0d12]/95 backdrop-blur-md border-b border-zinc-200/80 dark:border-zinc-800/80 transition-colors">
+    <header className="sticky top-0 z-40 bg-white dark:bg-[#0e131f] border-b border-slate-200 dark:border-[#1e293b] text-slate-900 dark:text-slate-100 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-16 gap-3">
-          {/* Logo & Plant Identity */}
-          <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center justify-between h-14 gap-6">
+          {/* Brand & Context */}
+          <div className="flex items-center gap-4 shrink-0">
             <button
-              onClick={() => handleNavClick('topology')}
-              className="flex items-center gap-2.5 text-left group focus-visible:outline-none"
-              title="Return to Plant Overview"
+              onClick={() => onSelectView('topology')}
+              className="flex items-center gap-2.5 text-left focus:outline-none"
             >
-              <div className="w-8 h-8 rounded-lg bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 flex items-center justify-center font-bold text-sm shadow-xs transition-transform group-hover:scale-105">
-                <Layers className="w-4 h-4" />
+              <div className="w-6 h-6 rounded bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 flex items-center justify-center font-bold text-xs tracking-tighter">
+                PL
               </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-bold tracking-tight text-zinc-900 dark:text-white font-display leading-none">
-                  PlantOps Hub
+              <div className="flex items-baseline gap-2">
+                <span className="font-semibold text-sm tracking-tight text-slate-950 dark:text-white font-display">
+                  PlantOps
                 </span>
-                <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium leading-tight flex items-center gap-1 mt-0.5">
-                  LV-04 <span className="text-zinc-300 dark:text-zinc-600">·</span> Lehigh Valley
+                <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
+                  LV-04 / Lehigh Valley
                 </span>
               </div>
             </button>
           </div>
 
-          {/* Desktop Navigation Tabs */}
-          <nav className="hidden lg:flex items-center gap-1 bg-zinc-100/70 dark:bg-zinc-900/60 p-1 rounded-lg border border-zinc-200/50 dark:border-zinc-800/60">
+          {/* Clean Enterprise Navigation */}
+          <nav className="hidden lg:flex items-center gap-1">
             {navItems.map((item) => {
-              const Icon = item.icon;
               const isActive = currentView === item.id;
               return (
                 <button
                   key={item.id}
-                  onClick={() => handleNavClick(item.id)}
-                  className={`relative flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                  onClick={() => onSelectView(item.id)}
+                  className={`relative px-3 py-1.5 text-xs font-medium rounded transition-colors whitespace-nowrap ${
                     isActive
-                      ? 'text-zinc-900 dark:text-white bg-white dark:bg-zinc-800 shadow-xs font-semibold'
-                      : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-white/50 dark:hover:bg-zinc-800/50'
+                      ? 'bg-slate-100 dark:bg-[#1a2234] text-slate-950 dark:text-white font-semibold'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-50 dark:hover:bg-[#151c2c]'
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-zinc-900 dark:text-white' : 'text-zinc-400'}`} />
                   <span>{item.label}</span>
-                  {item.badge !== undefined && item.badge > 0 && (
-                    <span
-                      className={`text-[10px] font-bold px-1.5 py-0.2 rounded-full leading-tight ${
-                        isActive
-                          ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
-                          : 'bg-zinc-200 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300'
-                      }`}
-                    >
-                      {item.badge}
+                  {item.count !== undefined && item.count > 0 && (
+                    <span className="ml-1.5 text-[10px] font-mono font-semibold text-amber-700 dark:text-amber-400">
+                      {item.count}
                     </span>
                   )}
                 </button>
@@ -148,87 +114,71 @@ export const TopBar: React.FC<TopBarProps> = ({
             })}
           </nav>
 
-          {/* Right Controls */}
+          {/* Right Action Tools */}
           <div className="flex items-center gap-2 shrink-0">
-            {/* Live Telemetry Pulse & Quick Sync */}
-            <div className="hidden sm:flex items-center gap-1 text-xs">
-              <button
-                onClick={() => {
-                  playTactileTick();
-                  onToggleLiveStream();
-                }}
-                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors border ${
-                  isLiveStreaming
-                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800/40'
-                    : 'bg-zinc-100 text-zinc-600 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700'
-                }`}
-                title={isLiveStreaming ? 'Live Stream Active (Syncing every 8s)' : 'Live Stream Paused'}
-              >
-                <span className={`w-1.5 h-1.5 rounded-full ${isLiveStreaming ? 'bg-emerald-500 animate-pulse' : 'bg-zinc-400'}`} />
-                <span className="hidden md:inline">{isLiveStreaming ? 'Live Sync' : 'Paused'}</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  playTactileTick();
-                  onRefresh();
-                }}
-                disabled={isSyncing}
-                className="p-1.5 rounded-md text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors disabled:opacity-50"
-                title={`Sync Now (Last: ${lastSyncTime})`}
-              >
-                <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
-              </button>
+            {/* Telemetry Status */}
+            <div className="hidden xl:flex items-center gap-1.5 text-[11px] font-mono text-slate-500 dark:text-slate-400 mr-2 border-r border-slate-200 dark:border-[#1e293b] pr-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400" />
+              <span>Synced {lastSyncTime}</span>
             </div>
 
-            {/* Shift & Supervisor Quick Selector */}
+            {/* Global Search Button */}
+            <button
+              onClick={onOpenCommandPalette}
+              className="flex items-center gap-2 px-2.5 py-1 text-xs text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white bg-slate-50 dark:bg-[#141a27] hover:bg-slate-100 dark:hover:bg-[#1b2335] rounded border border-slate-200 dark:border-[#1e293b] transition-colors"
+              title="Quick Search (⌘K)"
+            >
+              <Search className="w-3.5 h-3.5 text-slate-400" />
+              <span className="text-[11px] text-slate-500">Search</span>
+              <kbd className="font-mono text-[9px] bg-white dark:bg-[#0e131f] px-1 py-0.2 rounded border border-slate-200 dark:border-[#1e293b] text-slate-400">
+                ⌘K
+              </kbd>
+            </button>
+
+            {/* Shift & Supervisor Switcher */}
             <div className="relative hidden md:block">
               <button
                 onClick={() => setIsSupervisorMenuOpen((p) => !p)}
-                className="flex items-center gap-2 px-2.5 py-1.5 text-xs font-medium bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800/80 transition-colors text-zinc-700 dark:text-zinc-300"
+                className="flex items-center gap-2 px-2.5 py-1 text-xs bg-slate-50 dark:bg-[#141a27] border border-slate-200 dark:border-[#1e293b] rounded hover:bg-slate-100 dark:hover:bg-[#1b2335] transition-colors text-slate-700 dark:text-slate-300"
               >
-                <div className="w-5 h-5 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-[10px] font-bold text-zinc-700 dark:text-zinc-200">
-                  {currentSupervisor.split(' ').map((n) => n[0]).join('')}
+                <div className="flex items-baseline gap-1 text-[11px]">
+                  <span className="font-medium text-slate-900 dark:text-slate-100">{currentSupervisor}</span>
+                  <span className="text-slate-400 font-mono">({currentShift.split(' ')[0]})</span>
                 </div>
-                <div className="flex flex-col text-left leading-tight">
-                  <span className="font-semibold text-zinc-900 dark:text-zinc-100">{currentSupervisor}</span>
-                  <span className="text-[10px] text-zinc-500 dark:text-zinc-400">{currentShift.split(' ')[0]}</span>
-                </div>
+                <ChevronDown className="w-3 h-3 text-slate-400" />
               </button>
 
-              {/* Supervisor Dropdown */}
               <AnimatePresence>
                 {isSupervisorMenuOpen && (
                   <motion.div
-                    initial={{ opacity: 0, y: 6 }}
+                    initial={{ opacity: 0, y: 4 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 4 }}
-                    className="absolute right-0 mt-1.5 w-60 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-lg py-1.5 z-50 text-xs"
+                    className="absolute right-0 mt-1 w-56 bg-white dark:bg-[#0e131f] border border-slate-200 dark:border-[#1e293b] rounded shadow-lg py-1 z-50 text-xs"
                   >
-                    <div className="px-3 py-1.5 border-b border-zinc-100 dark:border-zinc-800 font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider text-[10px]">
-                      Select Active Supervisor & Shift
+                    <div className="px-3 py-1 text-[10px] font-semibold text-slate-400 uppercase tracking-wider font-mono border-b border-slate-100 dark:border-[#1e293b]">
+                      Active Plant Lead
                     </div>
                     {shifts.map((s) => (
                       <button
                         key={s.id}
                         onClick={() => {
-                          playTactileTick();
                           onSelectShift(s.id);
                           onSelectSupervisor(s.lead);
                           setIsSupervisorMenuOpen(false);
                         }}
-                        className={`w-full px-3 py-2 text-left flex items-center justify-between transition-colors ${
+                        className={`w-full px-3 py-1.5 text-left flex items-center justify-between transition-colors ${
                           currentShift === s.id
-                            ? 'bg-zinc-100 dark:bg-zinc-800/80 text-zinc-950 dark:text-white font-semibold'
-                            : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/40'
+                            ? 'bg-slate-100 dark:bg-[#1a2234] text-slate-950 dark:text-white font-medium'
+                            : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#141a27]'
                         }`}
                       >
                         <div>
-                          <div className="font-medium">{s.lead}</div>
-                          <div className="text-[11px] text-zinc-400 dark:text-zinc-500">{s.label}</div>
+                          <div>{s.lead}</div>
+                          <div className="text-[10px] text-slate-400 font-mono">{s.label}</div>
                         </div>
                         {currentShift === s.id && (
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                          <span className="text-[10px] font-mono text-emerald-600 font-semibold">Active</span>
                         )}
                       </button>
                     ))}
@@ -237,113 +187,65 @@ export const TopBar: React.FC<TopBarProps> = ({
               </AnimatePresence>
             </div>
 
-            {/* Quick Search Shortcut */}
+            {/* Log Discrepancy Primary Action */}
             <button
-              onClick={() => {
-                playTactileTick();
-                onOpenCommandPalette();
-              }}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors"
-              title="Search SKUs, lots, or commands (⌘K / Ctrl+K)"
+              onClick={onOpenNewScanModal}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-white bg-slate-900 dark:bg-slate-100 dark:text-slate-950 hover:bg-slate-800 dark:hover:bg-white rounded transition-colors whitespace-nowrap"
             >
-              <Search className="w-3.5 h-3.5" />
-              <span className="hidden xl:inline">Search</span>
-              <kbd className="hidden sm:inline text-[10px] font-mono text-zinc-400 bg-zinc-200/60 dark:bg-zinc-800 px-1 rounded">⌘K</kbd>
-            </button>
-
-            {/* Audio Toggle */}
-            <button
-              onClick={handleAudioToggle}
-              className="p-2 rounded-md text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-              title={isAudioActive ? 'Sound Feedback: ON (Click to Mute)' : 'Sound Feedback: OFF (Click to Enable)'}
-              aria-label="Toggle sound feedback"
-            >
-              {isAudioActive ? <Volume2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> : <VolumeX className="w-4 h-4" />}
+              <Plus className="w-3.5 h-3.5" />
+              <span>Log Discrepancy</span>
             </button>
 
             {/* Theme Toggle */}
             <button
-              onClick={() => {
-                playTactileTick();
-                onToggleTheme();
-              }}
-              className="p-2 rounded-md text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-              title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
-              aria-label="Toggle theme"
+              onClick={onToggleTheme}
+              className="p-1.5 rounded text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#141a27] transition-colors"
+              title={`Toggle theme (${theme})`}
+              aria-label="Toggle theme mode"
             >
-              {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
+              {theme === 'light' ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5" />}
             </button>
 
-            {/* Primary Action Button: New Scan */}
-            <button
-              onClick={() => {
-                playTactileTick();
-                onOpenNewScanModal();
-              }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors shadow-xs"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">New Scan</span>
-            </button>
-
-            {/* Mobile Menu Toggle Button */}
+            {/* Mobile Menu */}
             <button
               onClick={() => setIsMobileMenuOpen((p) => !p)}
-              className="lg:hidden p-2 rounded-md text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-              aria-label="Toggle Navigation Menu"
+              className="lg:hidden p-1.5 rounded text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+              aria-label="Toggle navigation menu"
             >
-              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {isMobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Drawer */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0c0d12] px-4 py-3 space-y-1"
+            className="lg:hidden border-t border-slate-200 dark:border-[#1e293b] bg-white dark:bg-[#0e131f] px-4 py-2 space-y-1"
           >
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = currentView === item.id;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => handleNavClick(item.id)}
-                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${
-                    isActive
-                      ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 font-semibold'
-                      : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5">
-                    <Icon className="w-4 h-4" />
-                    <span>{item.label}</span>
-                  </div>
-                  {item.badge !== undefined && item.badge > 0 && (
-                    <span
-                      className={`text-xs px-2 py-0.5 rounded-full font-bold ${
-                        isActive
-                          ? 'bg-white/20 text-white dark:bg-zinc-900/20 dark:text-zinc-900'
-                          : 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
-                      }`}
-                    >
-                      {item.badge}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-
-            {/* Mobile Shift Info */}
-            <div className="pt-2 mt-2 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between text-xs text-zinc-500">
-              <span>On Duty: <strong className="text-zinc-800 dark:text-zinc-200">{currentSupervisor}</strong></span>
-              <span>{currentShift.split(' ')[0]}</span>
-            </div>
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  onSelectView(item.id);
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`w-full flex items-center justify-between px-3 py-2 rounded text-xs text-left ${
+                  currentView === item.id
+                    ? 'bg-slate-100 dark:bg-[#1a2234] font-semibold text-slate-950 dark:text-white'
+                    : 'text-slate-600 dark:text-slate-400'
+                }`}
+              >
+                <span>{item.label}</span>
+                {item.count !== undefined && item.count > 0 && (
+                  <span className="font-mono text-xs text-amber-600 font-semibold">{item.count}</span>
+                )}
+              </button>
+            ))}
           </motion.div>
         )}
       </AnimatePresence>

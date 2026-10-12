@@ -1,8 +1,6 @@
 import React from 'react';
 import { OdiTransaction } from '../../types';
-import { RefreshCw, CheckCircle2, AlertTriangle, ArrowRight, Clock, Database, Server, Cpu } from 'lucide-react';
-import { motion } from 'motion/react';
-import { playTactileTick, playSuccessChime } from '../../utils/audio';
+import { RefreshCw, CheckCircle2, Server, Cpu, Database } from 'lucide-react';
 
 interface OdiInterfaceMonitorViewProps {
   transactions: OdiTransaction[];
@@ -14,148 +12,173 @@ export const OdiInterfaceMonitorView: React.FC<OdiInterfaceMonitorViewProps> = (
   onRetryTransaction,
 }) => {
   const failedOrLagging = transactions.filter((t) => t.oracleStatus !== 'delivered').length;
-
-  const handleRetry = (id: string) => {
-    playSuccessChime();
-    onRetryTransaction(id);
-  };
+  const avgLatency = (
+    transactions.reduce((acc, t) => acc + t.latencyMinutes, 0) / (transactions.length || 1)
+  ).toFixed(1);
 
   return (
     <div className="space-y-5 max-w-7xl mx-auto pb-12">
       {/* Header Banner */}
-      <div className="bg-white dark:bg-[#111317] border border-zinc-200/90 dark:border-zinc-800 rounded-xl p-5 sm:p-6 shadow-xs">
+      <div className="bg-white dark:bg-[#0e131f] border border-slate-200 dark:border-[#1e293b] rounded-lg p-5">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-900 dark:text-white">
-                <RefreshCw className="w-4 h-4" />
-              </div>
-              <h1 className="text-lg font-bold font-display text-zinc-900 dark:text-white">
-                Enterprise Data Pipeline & Oracle ODI Sync
-              </h1>
+            <div className="flex items-center gap-2 text-[11px] font-mono text-slate-500 uppercase tracking-wider">
+              <span>Plant LV-04</span>
+              <span>/</span>
+              <span>Downstream Interface</span>
+              <span>/</span>
+              <span>Oracle ODI Data Pipeline</span>
             </div>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-              Monitors WMS barcode scan payloads transferring downstream into Oracle General Ledger before period close.
+            <h1 className="text-lg font-semibold tracking-tight text-slate-950 dark:text-white mt-1">
+              Enterprise Data Pipeline & Oracle ODI Sync Console
+            </h1>
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
+              Tracks warehouse barcode scan payloads transferred into Oracle General Ledger before fiscal period close.
             </p>
           </div>
 
           <div className="text-right">
-            <span className="text-[11px] text-zinc-500 block">Transactions Exceeding 10m SLA</span>
-            <span className="text-xl font-bold font-mono text-amber-600 dark:text-amber-400">
+            <span className="text-[11px] font-mono text-slate-500 uppercase tracking-wider block">Batches Exceeding 10m SLA</span>
+            <span className="text-xl font-semibold font-mono text-amber-700 dark:text-amber-400 tabular-nums">
               {failedOrLagging} Items Flagged
             </span>
           </div>
         </div>
 
-        {/* 3 Pipeline Nodes */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4 pt-4 border-t border-zinc-100 dark:border-zinc-800">
-          <div className="p-3.5 bg-zinc-50 dark:bg-zinc-900/50 rounded-lg border border-zinc-200/60 dark:border-zinc-800 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <Cpu className="w-4 h-4 text-zinc-700 dark:text-zinc-300" />
-              <div>
-                <div className="text-xs font-semibold text-zinc-900 dark:text-white">MIPS Plant Floor</div>
-                <div className="text-[10px] text-zinc-500 font-mono">12ms socket ping</div>
-              </div>
+        {/* Aggregate KPI Strip */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5 pt-4 border-t border-slate-100 dark:border-[#1e293b]">
+          <div>
+            <div className="text-[11px] font-mono text-slate-500 uppercase tracking-wider">Average Transfer Latency</div>
+            <div className="mt-1 text-2xl font-semibold font-mono text-slate-900 dark:text-white tabular-nums">
+              {avgLatency}m
             </div>
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
-              Connected
-            </span>
           </div>
-
-          <div className="p-3.5 bg-zinc-50 dark:bg-zinc-900/50 rounded-lg border border-zinc-200/60 dark:border-zinc-800 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <Server className="w-4 h-4 text-zinc-700 dark:text-zinc-300" />
-              <div>
-                <div className="text-xs font-semibold text-zinc-900 dark:text-white">WMS Warehouse Core</div>
-                <div className="text-[10px] text-zinc-500 font-mono">48ms latency</div>
-              </div>
+          <div>
+            <div className="text-[11px] font-mono text-slate-500 uppercase tracking-wider">Target SLA</div>
+            <div className="mt-1 text-2xl font-semibold font-mono text-slate-900 dark:text-white">
+              &lt;10.0m
             </div>
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
-              In Sync
-            </span>
           </div>
-
-          <div className="p-3.5 bg-zinc-50 dark:bg-zinc-900/50 rounded-lg border border-zinc-200/60 dark:border-zinc-800 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <Database className="w-4 h-4 text-sky-500" />
-              <div>
-                <div className="text-xs font-semibold text-zinc-900 dark:text-white">Oracle Cloud ODI</div>
-                <div className="text-[10px] text-zinc-500 font-mono">Avg sync: 4.2 min</div>
-              </div>
+          <div>
+            <div className="text-[11px] font-mono text-slate-500 uppercase tracking-wider">Active Socket Ping</div>
+            <div className="mt-1 text-2xl font-semibold font-mono text-emerald-700 dark:text-emerald-400">
+              14ms (Healthy)
             </div>
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
-              SLA &lt;10m
-            </span>
+          </div>
+          <div>
+            <div className="text-[11px] font-mono text-slate-500 uppercase tracking-wider">Target Ledger</div>
+            <div className="mt-1 text-2xl font-semibold font-mono text-slate-900 dark:text-white">
+              Oracle Cloud GL
+            </div>
           </div>
         </div>
       </div>
 
+      {/* Subsystem Health Strip */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="p-3.5 bg-white dark:bg-[#0e131f] rounded-lg border border-slate-200 dark:border-[#1e293b] flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <Cpu className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+            <div>
+              <div className="text-xs font-semibold text-slate-900 dark:text-white">MIPS Plant Floor MES</div>
+              <div className="text-[10px] text-slate-500 font-mono">12ms socket latency</div>
+            </div>
+          </div>
+          <span className="font-mono text-[11px] font-medium text-emerald-700 dark:text-emerald-400">
+            Connected
+          </span>
+        </div>
+
+        <div className="p-3.5 bg-white dark:bg-[#0e131f] rounded-lg border border-slate-200 dark:border-[#1e293b] flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <Server className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+            <div>
+              <div className="text-xs font-semibold text-slate-900 dark:text-white">WMS Warehouse Core</div>
+              <div className="text-[10px] text-slate-500 font-mono">48ms ping latency</div>
+            </div>
+          </div>
+          <span className="font-mono text-[11px] font-medium text-emerald-700 dark:text-emerald-400">
+            In Sync
+          </span>
+        </div>
+
+        <div className="p-3.5 bg-white dark:bg-[#0e131f] rounded-lg border border-slate-200 dark:border-[#1e293b] flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <Database className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+            <div>
+              <div className="text-xs font-semibold text-slate-900 dark:text-white">Oracle Cloud ODI</div>
+              <div className="text-[10px] text-slate-500 font-mono">Avg sync: 4.2m</div>
+            </div>
+          </div>
+          <span className="font-mono text-[11px] font-medium text-emerald-700 dark:text-emerald-400">
+            SLA Nominal
+          </span>
+        </div>
+      </div>
+
       {/* Transaction Batches Table */}
-      <div className="bg-white dark:bg-[#111317] border border-zinc-200/90 dark:border-zinc-800 rounded-xl overflow-hidden shadow-xs">
-        <div className="p-4 border-b border-zinc-100 dark:border-zinc-800/80">
-          <h2 className="text-sm font-bold text-zinc-900 dark:text-white font-display">
+      <div className="bg-white dark:bg-[#0e131f] border border-slate-200 dark:border-[#1e293b] rounded-lg overflow-hidden">
+        <div className="p-3.5 border-b border-slate-100 dark:border-[#1e293b]">
+          <h2 className="text-xs font-semibold text-slate-900 dark:text-white">
             Recent Batch Sync Activity & Latency Monitor
           </h2>
-          <p className="text-xs text-zinc-500 mt-0.5">
-            WMS scans must reach Oracle within ~10 minutes to maintain ledger balance.
-          </p>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-xs text-left">
-            <thead className="bg-zinc-50 dark:bg-zinc-900/60 border-b border-zinc-200/80 dark:border-zinc-800 text-zinc-500 uppercase tracking-wider font-semibold text-[10px]">
+            <thead className="bg-slate-50 dark:bg-[#141a27] border-b border-slate-200 dark:border-[#1e293b] text-slate-500 font-mono text-[10px] uppercase tracking-wider font-semibold">
               <tr>
-                <th className="px-4 py-3">Batch ID / Ticket</th>
-                <th className="px-4 py-3">SKU</th>
-                <th className="px-4 py-3 text-right">Quantity</th>
-                <th className="px-4 py-3">Scanned Time</th>
-                <th className="px-4 py-3 text-right">Latency</th>
-                <th className="px-4 py-3 text-center">Oracle Status</th>
-                <th className="px-4 py-3 text-right">Action</th>
+                <th className="px-4 py-2.5">Batch ID / Ticket</th>
+                <th className="px-4 py-2.5">SKU</th>
+                <th className="px-4 py-2.5 text-right">Quantity</th>
+                <th className="px-4 py-2.5">Scanned Time</th>
+                <th className="px-4 py-2.5 text-right">Latency</th>
+                <th className="px-4 py-2.5 text-center">Oracle Status</th>
+                <th className="px-4 py-2.5 text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            <tbody className="divide-y divide-slate-100 dark:divide-[#1e293b]">
               {transactions.map((tx) => (
-                <tr key={tx.id} className="hover:bg-zinc-50/60 dark:hover:bg-zinc-900/40 transition-colors">
-                  <td className="px-4 py-3 font-mono font-medium text-zinc-900 dark:text-white">
+                <tr key={tx.id} className="hover:bg-slate-50 dark:hover:bg-[#141a27] transition-colors">
+                  <td className="px-4 py-2.5 font-mono font-medium text-slate-900 dark:text-white">
                     <div>{tx.id}</div>
-                    <div className="text-[10px] text-zinc-400 font-sans">{tx.ticketNumber}</div>
+                    <div className="text-[10px] text-slate-400 font-sans">{tx.ticketNumber}</div>
                   </td>
-                  <td className="px-4 py-3 font-mono text-zinc-700 dark:text-zinc-300">{tx.sku}</td>
-                  <td className="px-4 py-3 text-right font-mono font-medium text-zinc-900 dark:text-white">
+                  <td className="px-4 py-2.5 font-mono text-slate-700 dark:text-slate-300">{tx.sku}</td>
+                  <td className="px-4 py-2.5 text-right font-mono font-medium text-slate-900 dark:text-white tabular-nums">
                     {tx.qty.toLocaleString()} units
                   </td>
-                  <td className="px-4 py-3 text-zinc-500 font-mono text-[11px]">{tx.scannedAtWms}</td>
-                  <td className="px-4 py-3 text-right font-mono font-bold">
-                    <span className={tx.latencyMinutes > 10 ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'}>
+                  <td className="px-4 py-2.5 text-slate-500 font-mono text-[11px]">{tx.scannedAtWms}</td>
+                  <td className="px-4 py-2.5 text-right font-mono font-bold tabular-nums">
+                    <span className={tx.latencyMinutes > 10 ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-700 dark:text-emerald-400'}>
                       {tx.latencyMinutes}m
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-center">
+                  <td className="px-4 py-2.5 text-center font-mono">
                     {tx.oracleStatus === 'delivered' ? (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
+                      <span className="text-emerald-700 dark:text-emerald-400 font-medium text-[11px]">
                         Delivered
                       </span>
                     ) : tx.oracleStatus === 'lagging_sla' ? (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300">
+                      <span className="text-amber-700 dark:text-amber-400 font-medium text-[11px]">
                         Lagging SLA
                       </span>
                     ) : (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300">
+                      <span className="text-rose-700 dark:text-rose-400 font-medium text-[11px]">
                         Interface Failed
                       </span>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-right">
+                  <td className="px-4 py-2.5 text-right">
                     {tx.oracleStatus !== 'delivered' ? (
                       <button
-                        onClick={() => handleRetry(tx.id)}
-                        className="px-2.5 py-1 text-xs font-semibold text-white bg-zinc-900 dark:bg-white dark:text-zinc-900 hover:bg-zinc-800 rounded shadow-2xs"
+                        onClick={() => onRetryTransaction(tx.id)}
+                        className="px-2.5 py-1 text-xs font-medium text-white bg-slate-900 dark:bg-slate-100 dark:text-slate-950 hover:bg-slate-800 dark:hover:bg-white rounded"
                       >
                         Push Now
                       </button>
                     ) : (
-                      <span className="text-[11px] text-zinc-400">Synced</span>
+                      <span className="text-[11px] text-slate-400 font-mono">Synced</span>
                     )}
                   </td>
                 </tr>

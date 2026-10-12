@@ -72,7 +72,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
     const hotspotItems = [1, 2, 3, 4, 5, 6, 7, 8].map((num) => ({
       id: `hs-${num}`,
       category: 'Filter Zone',
-      label: `Zone #${num}: ${HOTSPOT_METADATA[num].title}`,
+      label: `Zone #${num}: ${HOTSPOT_METADATA[num as HotspotNumber].title}`,
       icon: AlertTriangle,
       action: () => {
         if (onSelectHotspotFilter) onSelectHotspotFilter(num as HotspotNumber);
@@ -124,7 +124,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.12 }}
-            className="fixed inset-0 bg-black/40 backdrop-blur-2xs"
+            className="fixed inset-0 bg-black/50 backdrop-blur-xs"
             onClick={onClose}
           />
 
@@ -133,32 +133,32 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.97, y: -6 }}
             transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-xl rounded-xl bg-white dark:bg-[#14161b] border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden text-zinc-900 dark:text-zinc-100 z-10"
+            className="relative w-full max-w-xl rounded-xl bg-white dark:bg-[#111520] border border-slate-200 dark:border-[#1e2638] shadow-2xl overflow-hidden text-slate-900 dark:text-slate-100 z-10"
             onKeyDown={handleKeyDownList}
           >
             {/* Search Input Bar */}
-            <div className="flex items-center border-b border-zinc-100 dark:border-zinc-800 px-4 py-3">
-              <Search className="w-4 h-4 text-zinc-400 mr-3 shrink-0" />
+            <div className="flex items-center border-b border-slate-100 dark:border-[#1e2638] px-4 py-3">
+              <Search className="w-4 h-4 text-slate-400 mr-3 shrink-0" />
               <input
                 type="text"
                 autoFocus
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Jump to view, SKU, or operational zone..."
-                className="w-full bg-transparent text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none font-sans"
+                className="w-full bg-transparent text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none font-sans"
               />
               <button
                 onClick={onClose}
-                className="p-1 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 text-xs"
+                className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs"
               >
-                <kbd className="font-mono bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded text-[10px]">ESC</kbd>
+                <kbd className="font-mono bg-slate-100 dark:bg-[#161b28] px-1.5 py-0.5 rounded text-[10px]">ESC</kbd>
               </button>
             </div>
 
             {/* List */}
             <div className="max-h-80 overflow-y-auto p-2 space-y-1">
               {commandItems.length === 0 ? (
-                <div className="py-8 text-center text-xs text-zinc-400">
+                <div className="py-8 text-center text-xs text-slate-400">
                   No matching results found for "{query}".
                 </div>
               ) : (
@@ -172,15 +172,15 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                       onMouseEnter={() => setSelectedIndex(idx)}
                       className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs text-left transition-colors ${
                         isSelected
-                          ? 'bg-zinc-100 dark:bg-zinc-800/80 text-zinc-950 dark:text-white font-semibold'
-                          : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/40'
+                          ? 'bg-slate-100 dark:bg-[#1e2536] text-slate-950 dark:text-white font-semibold'
+                          : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#161b28]'
                       }`}
                     >
                       <div className="flex items-center gap-2.5 truncate">
-                        <Icon className="w-3.5 h-3.5 shrink-0 text-zinc-400" />
+                        <Icon className="w-3.5 h-3.5 shrink-0 text-slate-400" />
                         <span className="truncate">{item.label}</span>
                       </div>
-                      <span className="text-[10px] text-zinc-400 shrink-0 uppercase tracking-wider font-mono">
+                      <span className="text-[10px] text-slate-400 shrink-0 uppercase tracking-wider font-mono">
                         {item.category}
                       </span>
                     </button>

@@ -271,17 +271,11 @@ export default function App() {
     <div
       className={`${
         theme === 'dark'
-          ? 'dark theme-dark bg-[#090a0f] text-zinc-100'
-          : 'theme-light bg-[#f8fafc] text-zinc-900'
+          ? 'dark theme-dark bg-[#0b0e14] text-slate-100'
+          : 'theme-light bg-[#f8fafc] text-slate-900'
       } min-h-screen flex flex-col font-sans transition-colors duration-150 relative`}
     >
-      {/* Scroll Depth Progress Bar */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-[2px] bg-zinc-900 dark:bg-white z-50 origin-left"
-        style={{ scaleX }}
-      />
-
-      {/* Unified Single Navigation Bar (Zero Clutter) */}
+      {/* Unified Enterprise Navigation */}
       <TopBar
         currentView={currentView}
         onSelectView={setCurrentView}
@@ -389,7 +383,7 @@ export default function App() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 12 }}
             onClick={scrollToTop}
-            className="fixed bottom-6 right-6 z-40 p-2.5 rounded-full bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95"
+            className="fixed bottom-6 right-6 z-40 p-2.5 rounded-md bg-slate-900 text-white dark:bg-white dark:text-slate-950 shadow-md hover:shadow-lg transition-all hover:scale-105 active:scale-95"
             title="Scroll to top"
             aria-label="Scroll back to top of dashboard"
           >
@@ -405,7 +399,7 @@ export default function App() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 16 }}
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 px-4 py-2.5 rounded-lg shadow-xl text-xs font-medium flex items-center gap-2 border border-zinc-700/50 dark:border-zinc-300"
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white dark:bg-white dark:text-slate-950 px-4 py-2.5 rounded-lg shadow-xl text-xs font-medium flex items-center gap-2 border border-slate-700/50 dark:border-slate-300"
           >
             <CheckCircle2 className="w-4 h-4 text-emerald-400 dark:text-emerald-600" />
             <span>{toastMessage}</span>

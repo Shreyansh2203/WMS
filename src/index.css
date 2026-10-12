@@ -35,14 +35,14 @@ html {
 
 html.light, html:not(.dark) {
   color-scheme: light;
-  background-color: #f9fafb;
-  color: #111827;
+  background-color: #f8f9fa;
+  color: #0f172a;
 }
 
 html.dark {
   color-scheme: dark;
-  background-color: #090a0c;
-  color: #f9fafb;
+  background-color: #0b0e14;
+  color: #f8fafc;
 }
 
 .font-display {
@@ -51,45 +51,48 @@ html.dark {
 
 .font-mono {
   font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
 }
 
-/* Light Theme Variables */
+/* Light Theme Variables - Precision Industrial Slate */
 :root, .theme-light {
-  --bg-canvas: #f9fafb;
+  --bg-canvas: #f8f9fa;
   --bg-surface: #ffffff;
-  --bg-surface-subtle: #f3f4f6;
+  --bg-surface-subtle: #f1f5f9;
   --bg-surface-elevated: #ffffff;
-  --border-subtle: #e5e7eb;
-  --border-strong: #d1d5db;
-  --text-primary: #111827;
-  --text-secondary: #4b5563;
-  --text-muted: #9ca3af;
-  --action-primary: #111827;
+  --border-subtle: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --action-primary: #0f172a;
   --action-primary-text: #ffffff;
-  --action-hover: #1f2937;
-  --chart-line: #0f172a;
-  --chart-fill-start: rgba(15, 23, 42, 0.08);
+  --action-hover: #1e293b;
+  --status-nominal: #059669;
+  --status-warning: #d97706;
+  --status-critical: #dc2626;
 }
 
-/* Dark Theme Variables (Architectural Obsidian & Graphite, NOT purple slop) */
+/* Dark Theme Variables - Precision Technical Obsidian & Deep Slate */
 .theme-dark {
-  --bg-canvas: #090a0c;
-  --bg-surface: #111317;
-  --bg-surface-subtle: #17191f;
-  --bg-surface-elevated: #1b1e24;
-  --border-subtle: #1f232b;
-  --border-strong: #2c313c;
-  --text-primary: #f9fafb;
-  --text-secondary: #9ca3af;
-  --text-muted: #6b7280;
-  --action-primary: #f9fafb;
-  --action-primary-text: #090a0c;
-  --action-hover: #e5e7eb;
-  --chart-line: #38bdf8;
-  --chart-fill-start: rgba(56, 189, 248, 0.12);
+  --bg-canvas: #0b0e14;
+  --bg-surface: #111520;
+  --bg-surface-subtle: #161b28;
+  --bg-surface-elevated: #1a2030;
+  --border-subtle: #1e2638;
+  --border-strong: #2a354c;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --action-primary: #f8fafc;
+  --action-primary-text: #0b0e14;
+  --action-hover: #e2e8f0;
+  --status-nominal: #10b981;
+  --status-warning: #fbbf24;
+  --status-critical: #f87171;
 }
 
-/* Custom crisp scrollbar */
+/* Custom crisp technical scrollbar */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -98,11 +101,9 @@ html.dark {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(156, 163, 175, 0.25);
+  background: rgba(148, 163, 184, 0.2);
   border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(156, 163, 175, 0.45);
+  background: rgba(148, 163, 184, 0.4);
 }
-
-
