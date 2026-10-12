@@ -7,7 +7,6 @@ import {
   ShieldCheck,
   ChevronRight,
   Check,
-  AlertCircle,
   Database,
   Cpu,
   Server,
@@ -40,7 +39,7 @@ export const TopologyView: React.FC<TopologyViewProps> = ({
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
       {/* Enterprise Facility Context Header */}
-      <div className="bg-white dark:bg-[#0e131f] border border-slate-200 dark:border-[#1e293b] rounded-lg p-5">
+      <div className="bg-white dark:bg-[#0c1018] border border-slate-200/90 dark:border-[#1a2336] rounded-lg p-5 shadow-[0_1px_3px_rgba(0,0,0,0.03)] dark:shadow-[0_1px_0_rgba(255,255,255,0.03)]">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 text-[11px] font-mono text-slate-500 uppercase tracking-wider">
@@ -61,12 +60,12 @@ export const TopologyView: React.FC<TopologyViewProps> = ({
           {/* Remediation Policy */}
           <div className="flex items-center gap-2 text-xs">
             <span className="text-[11px] font-mono text-slate-500">Auto-Remediation:</span>
-            <div className="inline-flex bg-slate-100 dark:bg-[#141a27] p-0.5 rounded border border-slate-200 dark:border-[#1e293b]">
+            <div className="inline-flex bg-slate-100 dark:bg-[#121725] p-0.5 rounded border border-slate-200/90 dark:border-[#1a2336]">
               <button
                 onClick={() => setAutomationPolicy('supervisor_approval')}
                 className={`px-2.5 py-1 text-xs rounded transition-colors ${
                   automationPolicy === 'supervisor_approval'
-                    ? 'bg-white dark:bg-[#1f293d] text-slate-900 dark:text-white font-medium shadow-xs'
+                    ? 'bg-white dark:bg-[#182033] text-slate-950 dark:text-white font-medium shadow-xs'
                     : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
@@ -76,7 +75,7 @@ export const TopologyView: React.FC<TopologyViewProps> = ({
                 onClick={() => setAutomationPolicy('auto_low_risk')}
                 className={`px-2.5 py-1 text-xs rounded transition-colors ${
                   automationPolicy === 'auto_low_risk'
-                    ? 'bg-white dark:bg-[#1f293d] text-slate-900 dark:text-white font-medium shadow-xs'
+                    ? 'bg-white dark:bg-[#182033] text-slate-950 dark:text-white font-medium shadow-xs'
                     : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
@@ -87,16 +86,16 @@ export const TopologyView: React.FC<TopologyViewProps> = ({
         </div>
 
         {/* Compact KPI Strip */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5 pt-4 border-t border-slate-100 dark:border-[#1e293b]">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5 pt-4 border-t border-slate-100 dark:border-[#1a2336]">
           <div>
             <div className="text-[11px] font-medium text-slate-500 uppercase tracking-wider font-mono">
               Active Discrepancies
             </div>
             <div className="mt-1 flex items-baseline gap-2">
-              <span className="text-2xl font-semibold font-mono text-slate-900 dark:text-white tabular-nums">
+              <span className="text-2xl font-semibold font-mono text-slate-950 dark:text-white tabular-nums">
                 {unresolvedCount}
               </span>
-              <span className="text-xs text-slate-500 font-mono">
+              <span className="text-xs text-rose-700 dark:text-rose-400 font-mono font-medium">
                 (${totalAtRiskFinancial.toLocaleString()} at risk)
               </span>
             </div>
@@ -107,10 +106,10 @@ export const TopologyView: React.FC<TopologyViewProps> = ({
               Overproduction Averted
             </div>
             <div className="mt-1 flex items-baseline gap-2">
-              <span className="text-2xl font-semibold font-mono text-slate-900 dark:text-white tabular-nums">
+              <span className="text-2xl font-semibold font-mono text-slate-950 dark:text-white tabular-nums">
                 48,200
               </span>
-              <span className="text-xs text-emerald-700 dark:text-emerald-400 font-mono font-medium">
+              <span className="px-1.5 py-0.2 rounded text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border border-emerald-500/20">
                 +$112,400 saved
               </span>
             </div>
@@ -121,7 +120,7 @@ export const TopologyView: React.FC<TopologyViewProps> = ({
               Ledger Alignment Rate
             </div>
             <div className="mt-1 flex items-baseline gap-2">
-              <span className="text-2xl font-semibold font-mono text-slate-900 dark:text-white tabular-nums">
+              <span className="text-2xl font-semibold font-mono text-slate-950 dark:text-white tabular-nums">
                 96.8%
               </span>
               <span className="text-xs text-slate-500 font-mono">Target: &gt;95%</span>
@@ -133,7 +132,7 @@ export const TopologyView: React.FC<TopologyViewProps> = ({
               Oracle Sync Latency
             </div>
             <div className="mt-1 flex items-baseline gap-2">
-              <span className="text-2xl font-semibold font-mono text-slate-900 dark:text-white tabular-nums">
+              <span className="text-2xl font-semibold font-mono text-blue-700 dark:text-blue-400 tabular-nums">
                 4.2m
               </span>
               <span className="text-xs text-slate-500 font-mono">SLA &lt;10m</span>
@@ -146,8 +145,8 @@ export const TopologyView: React.FC<TopologyViewProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column (2 cols): Priority Exceptions Triage */}
         <div className="lg:col-span-2 space-y-4">
-          <div className="bg-white dark:bg-[#0e131f] border border-slate-200 dark:border-[#1e293b] rounded-lg p-5">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-[#1e293b]">
+          <div className="bg-white dark:bg-[#0c1018] border border-slate-200/90 dark:border-[#1a2336] rounded-lg p-5 shadow-[0_1px_3px_rgba(0,0,0,0.03)] dark:shadow-[0_1px_0_rgba(255,255,255,0.03)]">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-[#1a2336]">
               <div>
                 <h2 className="text-sm font-semibold text-slate-950 dark:text-white">
                   Priority Discrepancies Requiring Authorization
@@ -159,7 +158,7 @@ export const TopologyView: React.FC<TopologyViewProps> = ({
 
               <button
                 onClick={onNavigateToRecon}
-                className="text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white flex items-center gap-1"
+                className="text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white flex items-center gap-1 transition-colors"
               >
                 <span>View All ({items.length})</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -167,11 +166,11 @@ export const TopologyView: React.FC<TopologyViewProps> = ({
             </div>
 
             {/* List of high-priority exceptions */}
-            <div className="divide-y divide-slate-100 dark:divide-[#1e293b]">
+            <div className="divide-y divide-slate-100 dark:divide-[#1a2336]">
               {urgentItems.length === 0 ? (
                 <div className="py-8 text-center text-xs text-slate-500">
                   <CheckCircle2 className="w-6 h-6 text-emerald-600 mx-auto mb-2" />
-                  All variances reconciled for shift {currentSupervisor}.
+                  All variances reconciled for shift lead {currentSupervisor}.
                 </div>
               ) : (
                 urgentItems.map((item) => (
@@ -184,7 +183,7 @@ export const TopologyView: React.FC<TopologyViewProps> = ({
                         <span className="text-slate-400">·</span>
                         <span className="font-mono text-slate-500">{item.sku}</span>
                       </div>
-                      <span className="font-mono text-[11px] text-amber-700 dark:text-amber-400 font-medium">
+                      <span className="px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-slate-100 dark:bg-[#151c2c] text-slate-700 dark:text-slate-300 border border-slate-200/90 dark:border-[#222e47]">
                         Zone {item.hotspotNumber}: {item.hotspotTitle}
                       </span>
                     </div>
@@ -193,29 +192,29 @@ export const TopologyView: React.FC<TopologyViewProps> = ({
                       <div className="font-medium text-sm text-slate-900 dark:text-white">
                         {item.skuName}
                       </div>
-                      <div className="font-mono text-xs font-semibold text-slate-900 dark:text-white">
-                        ${item.financialImpact.toLocaleString()}
+                      <div className="font-mono text-xs font-semibold text-rose-700 dark:text-rose-400">
+                        ${item.financialImpact.toLocaleString()} Exposure
                       </div>
                     </div>
 
                     {/* Diagnostic Context */}
-                    <div className="bg-slate-50 dark:bg-[#141a27] border border-slate-200/60 dark:border-[#1e293b] rounded p-2.5 text-xs text-slate-700 dark:text-slate-300 font-sans leading-relaxed">
+                    <div className="bg-slate-50/80 dark:bg-[#111726] border border-slate-200/70 dark:border-[#182133] rounded p-2.5 text-xs text-slate-700 dark:text-slate-300 font-sans leading-relaxed">
                       {item.aiRecommendation}
                     </div>
 
                     {/* Data Comparison Strip */}
-                    <div className="grid grid-cols-4 gap-2 text-xs font-mono bg-white dark:bg-[#0e131f] border border-slate-200/60 dark:border-[#1e293b] rounded p-2">
+                    <div className="grid grid-cols-4 gap-2 text-xs font-mono bg-white dark:bg-[#090c13] border border-slate-200/80 dark:border-[#192235] rounded p-2.5">
                       <div>
                         <span className="text-[10px] text-slate-400 block font-sans">MIPS Scheduled</span>
-                        <span className="text-slate-900 dark:text-white tabular-nums">{item.mipsQty.toLocaleString()}</span>
+                        <span className="text-slate-900 dark:text-white tabular-nums font-semibold">{item.mipsQty.toLocaleString()}</span>
                       </div>
                       <div>
                         <span className="text-[10px] text-slate-400 block font-sans">WMS Scan</span>
-                        <span className="text-slate-900 dark:text-white tabular-nums">{item.wmsQty.toLocaleString()}</span>
+                        <span className="text-slate-900 dark:text-white tabular-nums font-semibold">{item.wmsQty.toLocaleString()}</span>
                       </div>
                       <div>
                         <span className="text-[10px] text-slate-400 block font-sans">Discrepancy</span>
-                        <span className={`tabular-nums font-semibold ${item.varianceQty < 0 ? 'text-rose-600 dark:text-rose-400' : 'text-amber-600 dark:text-amber-400'}`}>
+                        <span className={`tabular-nums font-semibold ${item.varianceQty < 0 ? 'text-rose-700 dark:text-rose-400' : 'text-slate-900 dark:text-white'}`}>
                           {item.varianceQty > 0 ? `+${item.varianceQty}` : item.varianceQty}
                         </span>
                       </div>
@@ -234,13 +233,13 @@ export const TopologyView: React.FC<TopologyViewProps> = ({
                       <div className="flex items-center gap-2">
                         <button
                           onClick={onNavigateToRecon}
-                          className="px-2.5 py-1 text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                          className="px-2.5 py-1 text-xs text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white transition-colors"
                         >
                           Audit Details
                         </button>
                         <button
                           onClick={() => onApproveItem && onApproveItem(item, currentSupervisor)}
-                          className="px-3 py-1 text-xs font-medium text-white bg-slate-900 dark:bg-slate-100 dark:text-slate-950 hover:bg-slate-800 dark:hover:bg-white rounded transition-colors inline-flex items-center gap-1"
+                          className="px-3.5 py-1 text-xs font-medium text-white bg-slate-950 dark:bg-white dark:text-slate-950 hover:bg-slate-800 dark:hover:bg-slate-100 rounded shadow-xs transition-colors inline-flex items-center gap-1.5"
                         >
                           <Check className="w-3.5 h-3.5" />
                           <span>Authorize Adjustment</span>
@@ -257,13 +256,13 @@ export const TopologyView: React.FC<TopologyViewProps> = ({
         {/* Right Column (1 col): Subsystem Telemetry & Zone Matrix */}
         <div className="space-y-4">
           {/* Subsystems Health */}
-          <div className="bg-white dark:bg-[#0e131f] border border-slate-200 dark:border-[#1e293b] rounded-lg p-5">
+          <div className="bg-white dark:bg-[#0c1018] border border-slate-200/90 dark:border-[#1a2336] rounded-lg p-5 shadow-[0_1px_3px_rgba(0,0,0,0.03)] dark:shadow-[0_1px_0_rgba(255,255,255,0.03)]">
             <h2 className="text-sm font-semibold text-slate-950 dark:text-white mb-3">
               Subsystem Telemetry
             </h2>
 
             <div className="space-y-2.5 text-xs">
-              <div className="p-2.5 rounded border border-slate-200/80 dark:border-[#1e293b] bg-slate-50 dark:bg-[#141a27] flex items-center justify-between">
+              <div className="p-2.5 rounded border border-slate-200/80 dark:border-[#1a2336] bg-slate-50/80 dark:bg-[#111726] flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
                   <Cpu className="w-4 h-4 text-slate-600 dark:text-slate-400" />
                   <div>
@@ -271,10 +270,12 @@ export const TopologyView: React.FC<TopologyViewProps> = ({
                     <div className="text-[10px] text-slate-500 font-mono">Lines 1–5 streaming</div>
                   </div>
                 </div>
-                <span className="text-[11px] font-mono text-emerald-700 dark:text-emerald-400 font-medium">Nominal</span>
+                <span className="px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border border-emerald-500/20">
+                  Nominal
+                </span>
               </div>
 
-              <div className="p-2.5 rounded border border-slate-200/80 dark:border-[#1e293b] bg-slate-50 dark:bg-[#141a27] flex items-center justify-between">
+              <div className="p-2.5 rounded border border-slate-200/80 dark:border-[#1a2336] bg-slate-50/80 dark:bg-[#111726] flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
                   <Server className="w-4 h-4 text-slate-600 dark:text-slate-400" />
                   <div>
@@ -282,10 +283,12 @@ export const TopologyView: React.FC<TopologyViewProps> = ({
                     <div className="text-[10px] text-slate-500 font-mono">Handheld scanners linked</div>
                   </div>
                 </div>
-                <span className="text-[11px] font-mono text-emerald-700 dark:text-emerald-400 font-medium">Nominal</span>
+                <span className="px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border border-emerald-500/20">
+                  Nominal
+                </span>
               </div>
 
-              <div className="p-2.5 rounded border border-slate-200/80 dark:border-[#1e293b] bg-slate-50 dark:bg-[#141a27] flex items-center justify-between">
+              <div className="p-2.5 rounded border border-slate-200/80 dark:border-[#1a2336] bg-slate-50/80 dark:bg-[#111726] flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
                   <Database className="w-4 h-4 text-slate-600 dark:text-slate-400" />
                   <div>
@@ -293,10 +296,12 @@ export const TopologyView: React.FC<TopologyViewProps> = ({
                     <div className="text-[10px] text-slate-500 font-mono">General Ledger batches</div>
                   </div>
                 </div>
-                <span className="text-[11px] font-mono text-emerald-700 dark:text-emerald-400 font-medium">SLA 4.2m</span>
+                <span className="px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-blue-500/10 text-blue-800 dark:text-blue-400 border border-blue-500/20">
+                  SLA 4.2m
+                </span>
               </div>
 
-              <div className="p-2.5 rounded border border-slate-200/80 dark:border-[#1e293b] bg-slate-50 dark:bg-[#141a27] flex items-center justify-between">
+              <div className="p-2.5 rounded border border-slate-200/80 dark:border-[#1a2336] bg-slate-50/80 dark:bg-[#111726] flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
                   <Snowflake className="w-4 h-4 text-slate-600 dark:text-slate-400" />
                   <div>
@@ -304,13 +309,15 @@ export const TopologyView: React.FC<TopologyViewProps> = ({
                     <div className="text-[10px] text-slate-500 font-mono">-18°C · 3 Ghost lots pending</div>
                   </div>
                 </div>
-                <span className="text-[11px] font-mono text-amber-700 dark:text-amber-400 font-medium">Action Req</span>
+                <span className="px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-slate-100 dark:bg-[#151c2c] text-slate-700 dark:text-slate-300 border border-slate-200/90 dark:border-[#222e47]">
+                  Action Req
+                </span>
               </div>
             </div>
           </div>
 
-          {/* Operational Risk Zones Matrix (Clean table list, not cartoon cards) */}
-          <div className="bg-white dark:bg-[#0e131f] border border-slate-200 dark:border-[#1e293b] rounded-lg p-5">
+          {/* Operational Risk Zones Matrix */}
+          <div className="bg-white dark:bg-[#0c1018] border border-slate-200/90 dark:border-[#1a2336] rounded-lg p-5 shadow-[0_1px_3px_rgba(0,0,0,0.03)] dark:shadow-[0_1px_0_rgba(255,255,255,0.03)]">
             <h2 className="text-sm font-semibold text-slate-950 dark:text-white mb-2">
               Operational Hotspot Matrix (Zones 1–8)
             </h2>
@@ -318,7 +325,7 @@ export const TopologyView: React.FC<TopologyViewProps> = ({
               MIPS vs WMS alignment status across plant lines.
             </p>
 
-            <div className="divide-y divide-slate-100 dark:divide-[#1e293b] text-xs">
+            <div className="divide-y divide-slate-100 dark:divide-[#1a2336] text-xs">
               {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => {
                 const hotspot = HOTSPOT_METADATA[num as HotspotNumber];
                 const zoneItems = items.filter((i) => i.hotspotNumber === num);
@@ -328,7 +335,7 @@ export const TopologyView: React.FC<TopologyViewProps> = ({
                   <button
                     key={num}
                     onClick={() => onSelectHotspot(num as HotspotNumber)}
-                    className="w-full py-2 flex items-center justify-between text-left hover:text-slate-950 dark:hover:text-white transition-colors group"
+                    className="w-full py-2.5 flex items-center justify-between text-left hover:text-slate-950 dark:hover:text-white transition-colors group"
                   >
                     <div>
                       <div className="font-mono text-[11px] text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300">
@@ -341,7 +348,9 @@ export const TopologyView: React.FC<TopologyViewProps> = ({
 
                     <div className="text-right font-mono text-[11px]">
                       {zoneUnresolved > 0 ? (
-                        <span className="text-amber-700 dark:text-amber-400 font-semibold">{zoneUnresolved} pending</span>
+                        <span className="px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-slate-100 dark:bg-[#151c2c] text-slate-800 dark:text-slate-200 border border-slate-200/90 dark:border-[#222e47]">
+                          {zoneUnresolved} pending
+                        </span>
                       ) : (
                         <span className="text-slate-400 font-normal">Aligned</span>
                       )}

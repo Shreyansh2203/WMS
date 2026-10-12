@@ -9,7 +9,6 @@ import {
   CheckCircle2,
   LayoutGrid,
   Table as TableIcon,
-  ChevronDown,
 } from 'lucide-react';
 import { exportToCSV } from '../../utils/formatters';
 
@@ -83,7 +82,7 @@ export const ReconciliationQueueView: React.FC<ReconciliationQueueViewProps> = (
   return (
     <div className="space-y-5 max-w-7xl mx-auto pb-12">
       {/* Header Banner */}
-      <div className="bg-white dark:bg-[#0e131f] border border-slate-200 dark:border-[#1e293b] rounded-lg p-5">
+      <div className="bg-white dark:bg-[#0c1018] border border-slate-200/90 dark:border-[#1a2336] rounded-lg p-5 shadow-[0_1px_3px_rgba(0,0,0,0.03)] dark:shadow-[0_1px_0_rgba(255,255,255,0.03)]">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 text-[11px] font-mono text-slate-500 uppercase tracking-wider">
@@ -104,7 +103,7 @@ export const ReconciliationQueueView: React.FC<ReconciliationQueueViewProps> = (
           <div className="flex items-center gap-3">
             <button
               onClick={handleExportCSV}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white bg-slate-50 dark:bg-[#141a27] border border-slate-200 dark:border-[#1e293b] rounded transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white bg-slate-50 dark:bg-[#121725] border border-slate-200/90 dark:border-[#1a2336] rounded transition-colors"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Export Audit</span>
@@ -113,16 +112,16 @@ export const ReconciliationQueueView: React.FC<ReconciliationQueueViewProps> = (
         </div>
 
         {/* Status Metrics Strip */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5 pt-4 border-t border-slate-100 dark:border-[#1e293b]">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5 pt-4 border-t border-slate-100 dark:border-[#1a2336]">
           <div>
             <div className="text-[11px] font-mono text-slate-500 uppercase tracking-wider">Pending Sign-off</div>
-            <div className="mt-1 text-2xl font-semibold font-mono text-slate-900 dark:text-white tabular-nums">
+            <div className="mt-1 text-2xl font-semibold font-mono text-slate-950 dark:text-white tabular-nums">
               {pendingCount} items
             </div>
           </div>
           <div>
             <div className="text-[11px] font-mono text-slate-500 uppercase tracking-wider">Pending Exposure</div>
-            <div className="mt-1 text-2xl font-semibold font-mono text-slate-900 dark:text-white tabular-nums">
+            <div className="mt-1 text-2xl font-semibold font-mono text-rose-700 dark:text-rose-400 tabular-nums">
               ${pendingExposure.toLocaleString()}
             </div>
           </div>
@@ -134,7 +133,7 @@ export const ReconciliationQueueView: React.FC<ReconciliationQueueViewProps> = (
           </div>
           <div>
             <div className="text-[11px] font-mono text-slate-500 uppercase tracking-wider">Active Shift Lead</div>
-            <div className="mt-1 text-2xl font-semibold font-mono text-slate-900 dark:text-white">
+            <div className="mt-1 text-2xl font-semibold font-mono text-slate-950 dark:text-white">
               {currentSupervisor}
             </div>
           </div>
@@ -142,16 +141,16 @@ export const ReconciliationQueueView: React.FC<ReconciliationQueueViewProps> = (
       </div>
 
       {/* Filter Bar & Content */}
-      <div className="bg-white dark:bg-[#0e131f] border border-slate-200 dark:border-[#1e293b] rounded-lg overflow-hidden">
-        <div className="p-3.5 border-b border-slate-100 dark:border-[#1e293b] flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <div className="bg-white dark:bg-[#0c1018] border border-slate-200/90 dark:border-[#1a2336] rounded-lg overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.03)] dark:shadow-[0_1px_0_rgba(255,255,255,0.03)]">
+        <div className="p-3.5 border-b border-slate-100 dark:border-[#1a2336] flex flex-col md:flex-row md:items-center justify-between gap-3">
           {/* Segmented Filter */}
-          <div className="inline-flex bg-slate-100 dark:bg-[#141a27] p-0.5 rounded border border-slate-200 dark:border-[#1e293b] text-xs">
+          <div className="inline-flex bg-slate-100 dark:bg-[#121725] p-0.5 rounded border border-slate-200/90 dark:border-[#1a2336] text-xs">
             <button
               onClick={() => setStatusFilter('pending_approval')}
               className={`px-3 py-1 rounded transition-colors ${
                 statusFilter === 'pending_approval'
-                  ? 'bg-white dark:bg-[#1e293b] text-slate-950 dark:text-white font-medium shadow-xs'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-white dark:bg-[#182033] text-slate-950 dark:text-white font-medium shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
               }`}
             >
               Needs Review ({pendingCount})
@@ -160,8 +159,8 @@ export const ReconciliationQueueView: React.FC<ReconciliationQueueViewProps> = (
               onClick={() => setStatusFilter('approved_executed')}
               className={`px-3 py-1 rounded transition-colors ${
                 statusFilter === 'approved_executed'
-                  ? 'bg-white dark:bg-[#1e293b] text-slate-950 dark:text-white font-medium shadow-xs'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-white dark:bg-[#182033] text-slate-950 dark:text-white font-medium shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
               }`}
             >
               Approved ({approvedCount})
@@ -170,8 +169,8 @@ export const ReconciliationQueueView: React.FC<ReconciliationQueueViewProps> = (
               onClick={() => setStatusFilter('all')}
               className={`px-3 py-1 rounded transition-colors ${
                 statusFilter === 'all'
-                  ? 'bg-white dark:bg-[#1e293b] text-slate-950 dark:text-white font-medium shadow-xs'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-white dark:bg-[#182033] text-slate-950 dark:text-white font-medium shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
               }`}
             >
               All ({items.length})
@@ -187,7 +186,7 @@ export const ReconciliationQueueView: React.FC<ReconciliationQueueViewProps> = (
                 placeholder="Search SKU, work order, line..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-1 text-xs rounded border border-slate-200 dark:border-[#1e293b] bg-slate-50 dark:bg-[#141a27] text-slate-900 dark:text-white focus:outline-none"
+                className="w-full pl-9 pr-3 py-1 text-xs rounded border border-slate-200/90 dark:border-[#1a2336] bg-slate-50 dark:bg-[#121725] text-slate-900 dark:text-white focus:outline-none focus:border-slate-400 dark:focus:border-slate-500"
               />
             </div>
 
@@ -197,7 +196,7 @@ export const ReconciliationQueueView: React.FC<ReconciliationQueueViewProps> = (
                 const val = e.target.value === 'all' ? 'all' : (Number(e.target.value) as HotspotNumber);
                 onSetHotspotFilter(val);
               }}
-              className="text-xs py-1 px-2.5 rounded border border-slate-200 dark:border-[#1e293b] bg-slate-50 dark:bg-[#141a27] text-slate-800 dark:text-slate-200 focus:outline-none"
+              className="text-xs py-1 px-2.5 rounded border border-slate-200/90 dark:border-[#1a2336] bg-slate-50 dark:bg-[#121725] text-slate-800 dark:text-slate-200 focus:outline-none"
             >
               <option value="all">All Zones</option>
               {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
@@ -207,17 +206,17 @@ export const ReconciliationQueueView: React.FC<ReconciliationQueueViewProps> = (
               ))}
             </select>
 
-            <div className="flex items-center bg-slate-100 dark:bg-[#141a27] p-0.5 rounded border border-slate-200 dark:border-[#1e293b]">
+            <div className="flex items-center bg-slate-100 dark:bg-[#121725] p-0.5 rounded border border-slate-200/90 dark:border-[#1a2336]">
               <button
                 onClick={() => setViewMode('table')}
-                className={`p-1 rounded ${viewMode === 'table' ? 'bg-white dark:bg-[#1e293b] text-slate-900 dark:text-white shadow-xs' : 'text-slate-400'}`}
+                className={`p-1 rounded ${viewMode === 'table' ? 'bg-white dark:bg-[#182033] text-slate-900 dark:text-white shadow-xs' : 'text-slate-400'}`}
                 title="Table view"
               >
                 <TableIcon className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={() => setViewMode('cards')}
-                className={`p-1 rounded ${viewMode === 'cards' ? 'bg-white dark:bg-[#1e293b] text-slate-900 dark:text-white shadow-xs' : 'text-slate-400'}`}
+                className={`p-1 rounded ${viewMode === 'cards' ? 'bg-white dark:bg-[#182033] text-slate-900 dark:text-white shadow-xs' : 'text-slate-400'}`}
                 title="Card view"
               >
                 <LayoutGrid className="w-3.5 h-3.5" />
@@ -235,7 +234,7 @@ export const ReconciliationQueueView: React.FC<ReconciliationQueueViewProps> = (
         ) : viewMode === 'table' ? (
           <div className="overflow-x-auto">
             <table className="w-full text-xs text-left">
-              <thead className="bg-slate-50 dark:bg-[#141a27] border-b border-slate-200 dark:border-[#1e293b] text-slate-500 font-mono text-[10px] uppercase tracking-wider font-semibold">
+              <thead className="bg-slate-50/90 dark:bg-[#101522] border-b border-slate-200/90 dark:border-[#1a2336] text-slate-500 font-mono text-[10px] uppercase tracking-wider font-semibold">
                 <tr>
                   <th className="px-4 py-2.5">Record ID / Zone</th>
                   <th className="px-4 py-2.5">SKU & Product</th>
@@ -248,14 +247,14 @@ export const ReconciliationQueueView: React.FC<ReconciliationQueueViewProps> = (
                   <th className="px-4 py-2.5 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-[#1e293b]">
+              <tbody className="divide-y divide-slate-100 dark:divide-[#1a2336]">
                 {filteredItems.map((item) => (
                   <tr
                     key={item.id}
-                    className="hover:bg-slate-50 dark:hover:bg-[#141a27] transition-colors"
+                    className="hover:bg-slate-50/80 dark:hover:bg-[#111624] transition-colors"
                   >
                     <td className="px-4 py-2.5 font-mono">
-                      <div className="font-semibold text-slate-900 dark:text-white">{item.id}</div>
+                      <div className="font-semibold text-slate-950 dark:text-white">{item.id}</div>
                       <div className="text-[10px] text-slate-400">Zone {item.hotspotNumber}</div>
                     </td>
                     <td className="px-4 py-2.5">
@@ -266,42 +265,55 @@ export const ReconciliationQueueView: React.FC<ReconciliationQueueViewProps> = (
                       <div className="text-slate-800 dark:text-slate-200">{item.workOrder}</div>
                       <div className="text-slate-400">{item.plantLine}</div>
                     </td>
-                    <td className="px-4 py-2.5 text-right font-mono tabular-nums text-slate-900 dark:text-white">
+                    <td className="px-4 py-2.5 text-right font-mono tabular-nums text-slate-900 dark:text-white font-medium">
                       {item.mipsQty.toLocaleString()}
                     </td>
-                    <td className="px-4 py-2.5 text-right font-mono tabular-nums text-slate-900 dark:text-white">
+                    <td className="px-4 py-2.5 text-right font-mono tabular-nums text-slate-900 dark:text-white font-medium">
                       {item.wmsQty.toLocaleString()}
                     </td>
                     <td className="px-4 py-2.5 text-right font-mono tabular-nums font-semibold">
-                      <span className={item.varianceQty < 0 ? 'text-rose-600 dark:text-rose-400' : 'text-amber-600 dark:text-amber-400'}>
+                      <span className={item.varianceQty < 0 ? 'text-rose-700 dark:text-rose-400' : 'text-slate-900 dark:text-white'}>
                         {item.varianceQty > 0 ? `+${item.varianceQty}` : item.varianceQty}
                       </span>
                     </td>
-                    <td className="px-4 py-2.5 text-right font-mono tabular-nums font-semibold text-slate-900 dark:text-white">
+                    <td className="px-4 py-2.5 text-right font-mono tabular-nums font-semibold text-slate-950 dark:text-white">
                       ${item.financialImpact.toLocaleString()}
                     </td>
                     <td className="px-4 py-2.5 text-center font-mono text-[11px]">
                       {item.status === 'approved_executed' ? (
-                        <span className="text-emerald-700 dark:text-emerald-400 font-medium">Reconciled</span>
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border border-emerald-500/20">
+                          Reconciled
+                        </span>
                       ) : (
-                        <span className="text-amber-700 dark:text-amber-400 font-medium">Pending Review</span>
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-slate-100 dark:bg-[#151c2c] text-slate-700 dark:text-slate-300 border border-slate-200/90 dark:border-[#222e47]">
+                          Pending Review
+                        </span>
                       )}
                     </td>
                     <td className="px-4 py-2.5 text-right whitespace-nowrap">
                       <div className="flex items-center justify-end gap-1.5">
                         <button
                           onClick={() => setInspectedItem(item)}
-                          className="px-2 py-0.8 text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                          className="px-2.5 py-1 text-xs text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded hover:bg-slate-100 dark:hover:bg-[#151c2c] transition-colors"
                         >
                           Audit
                         </button>
                         {item.status === 'pending_approval' && (
-                          <button
-                            onClick={() => onApproveItem(item.id, currentSupervisor, currentShift)}
-                            className="px-2.5 py-0.8 text-xs bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-950 font-medium rounded hover:bg-slate-800 dark:hover:bg-white"
-                          >
-                            Authorize
-                          </button>
+                          <>
+                            <button
+                              onClick={() => onDismissItem(item.id)}
+                              className="px-2 py-1 text-xs text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 rounded transition-colors"
+                              title="Dismiss variance"
+                            >
+                              Dismiss
+                            </button>
+                            <button
+                              onClick={() => onApproveItem(item.id, currentSupervisor, currentShift)}
+                              className="px-3 py-1 text-xs bg-slate-950 dark:bg-white text-white dark:text-slate-950 font-medium rounded hover:bg-slate-800 dark:hover:bg-slate-100 shadow-xs transition-colors"
+                            >
+                              Authorize
+                            </button>
+                          </>
                         )}
                       </div>
                     </td>
@@ -316,7 +328,7 @@ export const ReconciliationQueueView: React.FC<ReconciliationQueueViewProps> = (
             {filteredItems.map((item) => (
               <div
                 key={item.id}
-                className="border border-slate-200 dark:border-[#1e293b] rounded-lg p-4 bg-white dark:bg-[#0e131f] space-y-3"
+                className="border border-slate-200/90 dark:border-[#1a2336] rounded-lg p-4 bg-white dark:bg-[#0c1018] space-y-3 shadow-xs"
               >
                 <div className="flex justify-between items-baseline text-xs">
                   <div className="flex items-center gap-2">
@@ -324,7 +336,9 @@ export const ReconciliationQueueView: React.FC<ReconciliationQueueViewProps> = (
                     <span className="text-slate-400">·</span>
                     <span className="font-mono text-slate-500">{item.sku}</span>
                   </div>
-                  <span className="font-mono text-[11px] text-slate-400">Zone {item.hotspotNumber}</span>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-slate-100 dark:bg-[#121725] text-slate-600 dark:text-slate-400 border border-slate-200/80 dark:border-[#1a2336]">
+                    Zone {item.hotspotNumber}
+                  </span>
                 </div>
 
                 <div>
@@ -334,46 +348,55 @@ export const ReconciliationQueueView: React.FC<ReconciliationQueueViewProps> = (
                   </div>
                 </div>
 
-                <div className="bg-slate-50 dark:bg-[#141a27] p-2 rounded text-xs text-slate-700 dark:text-slate-300">
+                <div className="bg-slate-50/80 dark:bg-[#111726] p-2.5 rounded border border-slate-200/70 dark:border-[#182133] text-xs text-slate-700 dark:text-slate-300">
                   {item.aiRecommendation}
                 </div>
 
-                <div className="grid grid-cols-3 gap-2 text-xs font-mono py-1 border-y border-slate-100 dark:border-[#1e293b]">
+                <div className="grid grid-cols-3 gap-2 text-xs font-mono py-1.5 border-y border-slate-100 dark:border-[#1a2336]">
                   <div>
                     <span className="text-[10px] text-slate-400 block font-sans">MIPS</span>
-                    <span className="text-slate-900 dark:text-white tabular-nums">{item.mipsQty.toLocaleString()}</span>
+                    <span className="text-slate-900 dark:text-white tabular-nums font-semibold">{item.mipsQty.toLocaleString()}</span>
                   </div>
                   <div>
                     <span className="text-[10px] text-slate-400 block font-sans">WMS</span>
-                    <span className="text-slate-900 dark:text-white tabular-nums">{item.wmsQty.toLocaleString()}</span>
+                    <span className="text-slate-900 dark:text-white tabular-nums font-semibold">{item.wmsQty.toLocaleString()}</span>
                   </div>
                   <div>
                     <span className="text-[10px] text-slate-400 block font-sans">Discrepancy</span>
-                    <span className={`tabular-nums font-semibold ${item.varianceQty < 0 ? 'text-rose-600 dark:text-rose-400' : 'text-amber-600 dark:text-amber-400'}`}>
+                    <span className={`tabular-nums font-semibold ${item.varianceQty < 0 ? 'text-rose-700 dark:text-rose-400' : 'text-slate-900 dark:text-white'}`}>
                       {item.varianceQty > 0 ? `+${item.varianceQty}` : item.varianceQty}
                     </span>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between pt-1">
-                  <span className="font-mono font-semibold text-xs text-slate-900 dark:text-white">
-                    ${item.financialImpact.toLocaleString()}
-                  </span>
+                  <div className="font-mono text-xs font-semibold text-slate-950 dark:text-white">
+                    ${item.financialImpact.toLocaleString()} Exposure
+                  </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5">
                     <button
                       onClick={() => setInspectedItem(item)}
-                      className="px-2.5 py-1 text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                      className="px-2.5 py-1 text-xs text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white"
                     >
                       Audit
                     </button>
                     {item.status === 'pending_approval' && (
-                      <button
-                        onClick={() => onApproveItem(item.id, currentSupervisor, currentShift)}
-                        className="px-3 py-1 text-xs bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-950 font-medium rounded"
-                      >
-                        Authorize
-                      </button>
+                      <>
+                        <button
+                          onClick={() => onDismissItem(item.id)}
+                          className="px-2 py-1 text-xs text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 rounded transition-colors"
+                          title="Dismiss variance"
+                        >
+                          Dismiss
+                        </button>
+                        <button
+                          onClick={() => onApproveItem(item.id, currentSupervisor, currentShift)}
+                          className="px-3 py-1 text-xs bg-slate-950 dark:bg-white text-white dark:text-slate-950 font-medium rounded hover:bg-slate-800 dark:hover:bg-slate-100 shadow-xs transition-colors"
+                        >
+                          Authorize
+                        </button>
+                      </>
                     )}
                   </div>
                 </div>
@@ -383,14 +406,14 @@ export const ReconciliationQueueView: React.FC<ReconciliationQueueViewProps> = (
         )}
       </div>
 
-      {/* Audit Detail Inspector Drawer */}
+      {/* Audit Detail Inspector Drawer / Modal */}
       {inspectedItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
-          <div className="bg-white dark:bg-[#0e131f] border border-slate-200 dark:border-[#1e293b] rounded-lg shadow-xl max-w-lg w-full p-5 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-[#1e293b]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
+          <div className="bg-white dark:bg-[#0c1018] border border-slate-200/90 dark:border-[#1a2336] rounded-lg shadow-2xl max-w-lg w-full p-5 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-[#1a2336]">
               <div>
                 <span className="text-[11px] font-mono text-slate-400">Three-Way Ledger Comparison</span>
-                <h3 className="text-base font-semibold text-slate-900 dark:text-white font-mono">
+                <h3 className="text-base font-semibold text-slate-950 dark:text-white font-mono">
                   {inspectedItem.id} · {inspectedItem.sku}
                 </h3>
               </div>
@@ -403,41 +426,52 @@ export const ReconciliationQueueView: React.FC<ReconciliationQueueViewProps> = (
             </div>
 
             <div className="space-y-3 text-xs">
-              <div className="p-3 bg-slate-50 dark:bg-[#141a27] rounded border border-slate-200/60 dark:border-[#1e293b]">
-                <div className="font-semibold text-slate-900 dark:text-white mb-1">Diagnostic Root Cause</div>
+              <div className="p-3 bg-slate-50/80 dark:bg-[#111726] rounded border border-slate-200/70 dark:border-[#182133]">
+                <div className="font-semibold text-slate-950 dark:text-white mb-1">Diagnostic Root Cause</div>
                 <p className="text-slate-600 dark:text-slate-300 leading-relaxed font-sans">
                   {inspectedItem.aiRecommendation}
                 </p>
               </div>
 
               <div className="grid grid-cols-3 gap-2 font-mono text-center">
-                <div className="p-2 border border-slate-200 dark:border-[#1e293b] rounded">
+                <div className="p-2.5 border border-slate-200/90 dark:border-[#1a2336] rounded bg-slate-50/50 dark:bg-[#0e131f]">
                   <span className="text-[10px] text-slate-400 block font-sans">MIPS Scheduled</span>
-                  <strong className="text-sm text-slate-900 dark:text-white tabular-nums">{inspectedItem.mipsQty.toLocaleString()}</strong>
+                  <strong className="text-sm text-slate-950 dark:text-white tabular-nums">{inspectedItem.mipsQty.toLocaleString()}</strong>
                 </div>
-                <div className="p-2 border border-slate-200 dark:border-[#1e293b] rounded">
+                <div className="p-2.5 border border-slate-200/90 dark:border-[#1a2336] rounded bg-slate-50/50 dark:bg-[#0e131f]">
                   <span className="text-[10px] text-slate-400 block font-sans">WMS Scan</span>
-                  <strong className="text-sm text-slate-900 dark:text-white tabular-nums">{inspectedItem.wmsQty.toLocaleString()}</strong>
+                  <strong className="text-sm text-slate-950 dark:text-white tabular-nums">{inspectedItem.wmsQty.toLocaleString()}</strong>
                 </div>
-                <div className="p-2 border border-slate-200 dark:border-[#1e293b] rounded">
+                <div className="p-2.5 border border-slate-200/90 dark:border-[#1a2336] rounded bg-slate-50/50 dark:bg-[#0e131f]">
                   <span className="text-[10px] text-slate-400 block font-sans">Exposure</span>
-                  <strong className="text-sm text-amber-700 dark:text-amber-400 tabular-nums">${inspectedItem.financialImpact.toLocaleString()}</strong>
+                  <strong className="text-sm text-rose-700 dark:text-rose-400 tabular-nums">${inspectedItem.financialImpact.toLocaleString()}</strong>
                 </div>
               </div>
 
-              <div className="p-3 border border-slate-200 dark:border-[#1e293b] rounded text-slate-700 dark:text-slate-300">
+              <div className="p-3 border border-slate-200/90 dark:border-[#1a2336] rounded text-slate-700 dark:text-slate-300">
                 <span className="text-[11px] font-mono text-slate-400 block uppercase mb-1">Proposed Corrective Action</span>
-                <p className="font-medium">{inspectedItem.proposedAction}</p>
+                <p className="font-medium text-slate-900 dark:text-white">{inspectedItem.proposedAction}</p>
                 <div className="mt-2 text-[11px] font-mono text-slate-400">
                   Target Systems: {inspectedItem.affectedSystems.join(', ')}
                 </div>
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 pt-2">
+            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-[#1a2336]">
+              {inspectedItem.status === 'pending_approval' && (
+                <button
+                  onClick={() => {
+                    onDismissItem(inspectedItem.id);
+                    setInspectedItem(null);
+                  }}
+                  className="px-3 py-1.5 text-xs text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 transition-colors"
+                >
+                  Dismiss Variance
+                </button>
+              )}
               <button
                 onClick={() => setInspectedItem(null)}
-                className="px-3 py-1.5 text-xs text-slate-600 dark:text-slate-400"
+                className="px-3 py-1.5 text-xs text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white transition-colors"
               >
                 Close
               </button>
@@ -447,7 +481,7 @@ export const ReconciliationQueueView: React.FC<ReconciliationQueueViewProps> = (
                     onApproveItem(inspectedItem.id, currentSupervisor, currentShift);
                     setInspectedItem(null);
                   }}
-                  className="px-3.5 py-1.5 text-xs bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-950 rounded font-medium"
+                  className="px-3.5 py-1.5 text-xs bg-slate-950 dark:bg-white text-white dark:text-slate-950 rounded font-medium shadow-xs hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors"
                 >
                   Authorize Adjustment
                 </button>

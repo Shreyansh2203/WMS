@@ -17,6 +17,8 @@
   body {
     font-family: var(--font-sans);
     transition: background-color 0.15s ease, color 0.15s ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
@@ -33,16 +35,17 @@ html {
   }
 }
 
+/* Base HTML canvases */
 html.light, html:not(.dark) {
   color-scheme: light;
-  background-color: #f8f9fa;
-  color: #0f172a;
+  background-color: #f4f6f9;
+  color: #0c1017;
 }
 
 html.dark {
   color-scheme: dark;
-  background-color: #0b0e14;
-  color: #f8fafc;
+  background-color: #080a0f;
+  color: #f3f5f9;
 }
 
 .font-display {
@@ -54,42 +57,43 @@ html.dark {
   font-variant-numeric: tabular-nums;
 }
 
-/* Light Theme Variables - Precision Industrial Slate */
+/* Rich & Premium Enterprise Color Palette */
 :root, .theme-light {
-  --bg-canvas: #f8f9fa;
+  --bg-canvas: #f4f6f9;
   --bg-surface: #ffffff;
-  --bg-surface-subtle: #f1f5f9;
+  --bg-surface-subtle: #edf0f5;
   --bg-surface-elevated: #ffffff;
-  --border-subtle: #e2e8f0;
-  --border-strong: #cbd5e1;
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
+  --border-subtle: #e2e6eb;
+  --border-strong: #cbd2dc;
+  --text-primary: #0c1017;
+  --text-secondary: #3e4c5e;
   --text-muted: #64748b;
   --action-primary: #0f172a;
   --action-primary-text: #ffffff;
   --action-hover: #1e293b;
-  --status-nominal: #059669;
-  --status-warning: #d97706;
-  --status-critical: #dc2626;
+  --status-nominal: #047857;
+  --status-warning: #475569;
+  --status-critical: #be123c;
+  --status-info: #1d4ed8;
 }
 
-/* Dark Theme Variables - Precision Technical Obsidian & Deep Slate */
 .theme-dark {
-  --bg-canvas: #0b0e14;
-  --bg-surface: #111520;
-  --bg-surface-subtle: #161b28;
-  --bg-surface-elevated: #1a2030;
-  --border-subtle: #1e2638;
-  --border-strong: #2a354c;
-  --text-primary: #f8fafc;
+  --bg-canvas: #080a0f;
+  --bg-surface: #0e121b;
+  --bg-surface-subtle: #131824;
+  --bg-surface-elevated: #171d2d;
+  --border-subtle: #1b2336;
+  --border-strong: #243048;
+  --text-primary: #f3f5f9;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
   --action-primary: #f8fafc;
-  --action-primary-text: #0b0e14;
+  --action-primary-text: #080a0f;
   --action-hover: #e2e8f0;
   --status-nominal: #10b981;
-  --status-warning: #fbbf24;
-  --status-critical: #f87171;
+  --status-warning: #94a3b8;
+  --status-critical: #f43f5e;
+  --status-info: #3b82f6;
 }
 
 /* Custom crisp technical scrollbar */
@@ -101,9 +105,20 @@ html.dark {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.2);
+  background: rgba(148, 163, 184, 0.22);
   border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.4);
+  background: rgba(148, 163, 184, 0.42);
+}
+
+/* Premium Panel Styling */
+.panel-premium {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 1px 2px -1px rgba(15, 23, 42, 0.02);
+}
+.dark .panel-premium {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.45), inset 0 1px 0 0 rgba(255, 255, 255, 0.04);
 }

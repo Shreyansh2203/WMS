@@ -1,6 +1,12 @@
 export type Theme = 'light' | 'dark';
+export type DensityMode = 'comfortable' | 'compact';
 
 export type DashboardView =
+  | 'wms'
+  | 'buss'
+  | 'mips'
+  | 'oracle_odi'
+  | 'overview'
   | 'topology'
   | 'reconciliation'
   | 'consolidate'
@@ -19,6 +25,61 @@ export interface HotspotMeta {
 }
 
 export type AutomationPolicy = 'supervisor_approval' | 'auto_low_risk';
+
+export interface BussSalesOrder {
+  orderId: string;
+  customer: string;
+  sku: string;
+  skuName: string;
+  orderQty: number;
+  allocatedQty: number;
+  orderType: 'SO' | 'SP' | 'EXPEDITE';
+  scheduledLine: string;
+  shipDate: string;
+  status: 'allocated' | 'conflict_flagged' | 'pending_split' | 'dispatched';
+  conflictReason?: string;
+}
+
+export interface MipsLineStatus {
+  lineId: string;
+  name: string;
+  productType: string;
+  currentRun: string;
+  currentSku: string;
+  currentSkuName: string;
+  plannedQty: number;
+  actualProduced: number;
+  targetRatePerHour: number;
+  actualRatePerHour: number;
+  oee: number;
+  status: 'running' | 'changeover' | 'blind_line_alert' | 'idle';
+  activeAlert?: string;
+  blindUnits?: number;
+  workstationSyncStatus: 'synced' | 'stale_detected';
+  sparkline?: number[];
+}
+
+export interface WmsBayStatus {
+  bayId: string;
+  zone: 'Aisle Racks' | 'Cold Storage Freezer' | 'Staging Bay' | 'Dock Doors';
+  capacityPallets: number;
+  currentPallets: number;
+  temperature?: string;
+  status: 'nominal' | 'near_capacity' | 'ghost_inventory_flagged';
+  activeGhostLots?: number;
+}
+
+export interface OdiPipelineStage {
+  stageId: string;
+  name: string;
+  sourceSystem: string;
+  targetSystem: string;
+  status: 'active' | 'lagging' | 'failed' | 'paused';
+  lastExecution: string;
+  latencySec: number;
+  recordsProcessed: number;
+  errorCount: number;
+}
 
 export interface ReconciliationItem {
   id: string;
@@ -84,6 +145,8 @@ export interface OdiTransaction {
   oracleStatus: 'delivered' | 'lagging_sla' | 'interface_failed';
   latencyMinutes: number;
   errorDetail?: string;
+  stagingPayload?: Record<string, string | number>;
+  erpPayload?: Record<string, string | number>;
 }
 
 export interface Supervisor {

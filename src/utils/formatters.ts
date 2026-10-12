@@ -25,25 +25,54 @@ export function formatPercent(val: number): string {
   return `${sign}${val.toFixed(1)}%`;
 }
 
-export function exportToCSV(data: any[], filename: string) {
+/**
+ * Sanitizes a string for CSV export to prevent Formula Injection (CWE-1236).
+ * Prepend a single quote if the value begins with formula characters: =, +, -, @, \t, \r
+ */
+function sanitizeCsvValue(val: unknown): string {
+  if (val === null || val === undefined) return '""';
+  let str = String(val).trim();
+  
+  // Guard against formula injection triggers
+  const formulaTriggers = ['=', '+', '-', '@', '\t', '\r'];
+  if (formulaTriggers.some((char) => str.startsWith(char))) {
+    str = `'${str}`;
+  }
+
+  // Escape inner quotes
+  return `"${str.replace(/"/g, '""')}"`;
+}
+
+/**
+ * Type-safe CSV export utility with formula injection mitigation and object URL cleanup.
+ */
+export function exportToCSV<T extends Record<string, unknown>>(data: T[], filename: string): void {
   if (!data || !data.length) return;
+
   const headers = Object.keys(data[0]);
   const rows = data.map((obj) =>
     headers
-      .map((header) => {
-        const val = obj[header] ?? '';
-        return `"${String(val).replace(/"/g, '""')}"`;
-      })
+      .map((header) => sanitizeCsvValue(obj[header]))
       .join(',')
   );
 
-  const csvContent = [headers.join(','), ...rows].join('\n');
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const headerRow = headers.map((h) => `"${h.replace(/"/g, '""')}"`).join(',');
+  const csvContent = [headerRow, ...rows].join('\r\n');
+  
+  // Prepend UTF-8 BOM for proper character decoding in Excel
+  const blob = new Blob(['\ufeff', csvContent], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
+  
+  const sanitizedFilename = filename.replace(/[^a-zA-Z0-9_-]/g, '_');
   link.setAttribute('href', url);
-  link.setAttribute('download', `${filename}-${new Date().toISOString().slice(0, 10)}.csv`);
+  link.setAttribute('download', `${sanitizedFilename}-${new Date().toISOString().slice(0, 10)}.csv`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+
+  // Prevent memory leak by revoking the Object URL after download trigger
+  setTimeout(() => {
+    URL.revokeObjectURL(url);
+  }, 1500);
 }
