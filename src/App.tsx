@@ -19,7 +19,6 @@ import {
   SHIFT_HANDOFF_LOGS,
 } from './data/mockData';
 import { TopBar } from './components/TopBar';
-import { WorkspaceToolbar } from './components/WorkspaceToolbar';
 import { TopologyView } from './components/views/TopologyView';
 import { ReconciliationQueueView } from './components/views/ReconciliationQueueView';
 import { ConsolidatePositionView } from './components/views/ConsolidatePositionView';
@@ -28,7 +27,7 @@ import { OdiInterfaceMonitorView } from './components/views/OdiInterfaceMonitorV
 import { ShiftHandoffView } from './components/views/ShiftHandoffView';
 import { CommandPalette } from './components/CommandPalette';
 import { NewEntryModal } from './components/NewEntryModal';
-import { ArrowUp } from 'lucide-react';
+import { ArrowUp, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence, useScroll, useSpring } from 'motion/react';
 import { playSuccessChime, playTactileTick } from './utils/audio';
 
@@ -141,28 +140,28 @@ export default function App() {
       if (e.key === '4') setCurrentView('freezer');
       if (e.key === '5') setCurrentView('odi_sync');
       if (e.key === '6') setCurrentView('handoff');
-      if (e.key.toLowerCase() === 't') toggleTheme();
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [toggleTheme]);
+  }, []);
 
-  // Real-time synchronization simulation
   const handleRefresh = useCallback(() => {
     setIsSyncing(true);
+    playTactileTick();
     setTimeout(() => {
-      const now = new Date();
-      const timeStr = `${String(now.getUTCHours()).padStart(2, '0')}:${String(
-        now.getUTCMinutes()
-      ).padStart(2, '0')}:${String(now.getUTCSeconds()).padStart(2, '0')} UTC`;
-      setLastSyncTime(timeStr);
       setIsSyncing(false);
-      showToast('MIPS, WMS and Oracle ODI interfaces synchronized');
-    }, 550);
+      const now = new Date();
+      setLastSyncTime(
+        `${String(now.getUTCHours()).padStart(2, '0')}:${String(now.getUTCMinutes()).padStart(
+          2,
+          '0'
+        )}:${String(now.getUTCSeconds()).padStart(2, '0')} UTC`
+      );
+      showToast('WMS and MIPS operational queues resynchronized');
+    }, 600);
   }, [showToast]);
 
-  // Supervisor Approval Execution
   const handleApproveItem = useCallback(
     (id: string, supervisorName: string, shift: string) => {
       const target = reconciliationItems.find((i) => i.id === id);
@@ -272,47 +271,46 @@ export default function App() {
     <div
       className={`${
         theme === 'dark'
-          ? 'dark theme-dark bg-[#090a0c] text-zinc-100'
-          : 'theme-light bg-[#f9fafb] text-zinc-900'
+          ? 'dark theme-dark bg-[#090a0f] text-zinc-100'
+          : 'theme-light bg-[#f8fafc] text-zinc-900'
       } min-h-screen flex flex-col font-sans transition-colors duration-150 relative`}
     >
-      {/* Scroll Depth Telemetry Progress Bar */}
+      {/* Scroll Depth Progress Bar */}
       <motion.div
         className="fixed top-0 left-0 right-0 h-[2px] bg-zinc-900 dark:bg-white z-50 origin-left"
         style={{ scaleX }}
       />
 
-      {/* Top Navigation Bar */}
+      {/* Unified Single Navigation Bar (Zero Clutter) */}
       <TopBar
         currentView={currentView}
         onSelectView={setCurrentView}
         onOpenNewScanModal={() => setIsNewScanModalOpen(true)}
+        onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
         theme={theme}
         onToggleTheme={toggleTheme}
         unresolvedCount={unresolvedCount}
-      />
-
-      {/* Lehigh Valley Operational Toolbar */}
-      <WorkspaceToolbar
-        currentView={currentView}
-        onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
-        isSyncing={isSyncing}
-        onRefresh={handleRefresh}
-        lastSyncTime={lastSyncTime}
         currentShift={currentShift}
-        isLiveStreaming={isLiveStreaming}
-        onToggleLiveStream={() => setIsLiveStreaming((p) => !p)}
         onSelectShift={(shift) => {
           setCurrentShift(shift);
           const firstSup = supervisors.find((s) => s.shift === shift);
           if (firstSup) setCurrentSupervisor(firstSup.name);
-          showToast(`Active shift switched to ${shift.split(' ')[0]}`);
+          showToast(`Shift set to ${shift.split(' ')[0]}`);
         }}
         currentSupervisor={currentSupervisor}
+        onSelectSupervisor={(name) => {
+          setCurrentSupervisor(name);
+          showToast(`Active supervisor: ${name}`);
+        }}
+        isLiveStreaming={isLiveStreaming}
+        onToggleLiveStream={() => setIsLiveStreaming((p) => !p)}
+        lastSyncTime={lastSyncTime}
+        isSyncing={isSyncing}
+        onRefresh={handleRefresh}
       />
 
       {/* Main Viewport with AnimatePresence Page Transition */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-5">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentView}
@@ -328,8 +326,12 @@ export default function App() {
                   setCurrentView('reconciliation');
                 }}
                 onNavigateToRecon={() => setCurrentView('reconciliation')}
+                onApproveItem={(item, supervisor) =>
+                  handleApproveItem(item.id, supervisor, currentShift)
+                }
                 unresolvedCount={unresolvedCount}
                 items={reconciliationItems}
+                currentSupervisor={currentSupervisor}
               />
             )}
 
@@ -379,58 +381,52 @@ export default function App() {
         </AnimatePresence>
       </main>
 
-      {/* Floating Scroll to Top Quick Action */}
+      {/* Floating Scroll to Top Action Button */}
       <AnimatePresence>
         {showScrollTop && (
           <motion.button
             initial={{ opacity: 0, scale: 0.8, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 12 }}
-            whileTap={{ scale: 0.9 }}
             onClick={scrollToTop}
-            className="fixed bottom-6 right-6 z-40 p-2.5 rounded-full bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 shadow-xl border border-zinc-700/20 hover:opacity-90 transition-opacity flex items-center justify-center cursor-pointer"
-            title="Scroll to top (Top of console)"
-            aria-label="Scroll back to top"
+            className="fixed bottom-6 right-6 z-40 p-2.5 rounded-full bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95"
+            title="Scroll to top"
+            aria-label="Scroll back to top of dashboard"
           >
             <ArrowUp className="w-4 h-4" />
           </motion.button>
         )}
       </AnimatePresence>
 
-      {/* Floating Plant Operational Toast */}
+      {/* Toast Notification Banner */}
       <AnimatePresence>
         {toastMessage && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-            className="fixed bottom-6 left-6 z-50 bg-zinc-900 dark:bg-zinc-100 text-zinc-100 dark:text-zinc-900 px-4 py-2.5 rounded-lg shadow-xl border border-zinc-800 dark:border-zinc-200 text-xs font-mono flex items-center gap-2.5"
+            exit={{ opacity: 0, y: 16 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 px-4 py-2.5 rounded-lg shadow-xl text-xs font-medium flex items-center gap-2 border border-zinc-700/50 dark:border-zinc-300"
           >
-            <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-ping" />
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 dark:text-emerald-600" />
             <span>{toastMessage}</span>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Command Palette Modal */}
+      {/* Global Command Palette */}
       <CommandPalette
         isOpen={isCommandPaletteOpen}
         onClose={() => setIsCommandPaletteOpen(false)}
-        onSelectView={setCurrentView}
+        onNavigate={(view) => setCurrentView(view)}
         items={reconciliationItems}
-        onTriggerSync={handleRefresh}
-        onSelectHotspotFilter={(num: HotspotNumber) => {
-          setSelectedHotspotFilter(num);
-          setCurrentView('reconciliation');
-        }}
+        positions={positions}
       />
 
-      {/* Manual Issue Creation Modal */}
+      {/* New Manual Scan Variance Entry Modal */}
       <NewEntryModal
         isOpen={isNewScanModalOpen}
         onClose={() => setIsNewScanModalOpen(false)}
-        onAddManualItem={handleAddManualItem}
+        onAddEntry={handleAddManualItem}
         currentSupervisor={currentSupervisor}
         currentShift={currentShift}
       />

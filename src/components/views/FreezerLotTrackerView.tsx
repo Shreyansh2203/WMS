@@ -1,8 +1,8 @@
 import React from 'react';
 import { FreezerLot } from '../../types';
-import { Snowflake, CheckCircle2, AlertTriangle, ArrowRight, Trash2 } from 'lucide-react';
+import { Snowflake, CheckCircle2, AlertTriangle, ArrowRight, Trash2, Check, ShieldCheck } from 'lucide-react';
 import { motion } from 'motion/react';
-import { playTactileTick } from '../../utils/audio';
+import { playTactileTick, playSuccessChime } from '../../utils/audio';
 
 interface FreezerLotTrackerViewProps {
   lots: FreezerLot[];
@@ -14,138 +14,127 @@ export const FreezerLotTrackerView: React.FC<FreezerLotTrackerViewProps> = ({ lo
     .filter((l) => l.wmsStatus === 'Ghost - Pending Deduction')
     .reduce((acc, l) => acc + l.quantity, 0);
 
+  const pendingCount = lots.filter((l) => l.wmsStatus === 'Ghost - Pending Deduction').length;
+
   const handleDeduct = (lotId: string) => {
-    playTactileTick();
+    playSuccessChime();
     onDeductLot(lotId);
   };
 
   return (
-    <div className="space-y-6">
-      {/* Banner with Scroll-In-View Transition */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-        className="bg-white dark:bg-[#111317] border border-zinc-200 dark:border-zinc-800 rounded-lg p-5 shadow-xs"
-      >
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-zinc-100 dark:border-zinc-800">
+    <div className="space-y-5 max-w-7xl mx-auto pb-12">
+      {/* Header */}
+      <div className="bg-white dark:bg-[#111317] border border-zinc-200/90 dark:border-zinc-800 rounded-xl p-5 sm:p-6 shadow-xs">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <Snowflake className="w-4 h-4 text-sky-500" />
-              <h2 className="text-sm font-bold font-display text-zinc-900 dark:text-white">
-                Hotspot #7 · Blast Freezer Phantom Inventory Reconciler
-              </h2>
+              <div className="w-7 h-7 rounded-lg bg-sky-50 dark:bg-sky-950/50 flex items-center justify-center text-sky-600 dark:text-sky-400">
+                <Snowflake className="w-4 h-4" />
+              </div>
+              <h1 className="text-lg font-bold font-display text-zinc-900 dark:text-white">
+                Cold Storage & Blast Freezer Lot Tracker
+              </h1>
             </div>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-              Tracks consumed freezer lots that remain in WMS after line switches (~300,000 units cleared manually after July 4).
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+              Tracks consumed blast-freezer pallets and reconciles ghost reservations with warehouse sub-inventory.
             </p>
           </div>
 
           <div className="text-right">
-            <div className="text-xs font-mono text-zinc-400">Total Virtual Ghost Inventory in WMS</div>
-            <div className="text-xl font-bold font-mono text-rose-600 dark:text-rose-400 tabular-nums">
+            <span className="text-[11px] text-zinc-500 block">Virtual Ghost Units Awaiting Deduction</span>
+            <span className="text-xl font-bold font-mono text-rose-600 dark:text-rose-400">
               {ghostUnitsTotal.toLocaleString()} units
-            </div>
+            </span>
           </div>
         </div>
 
-        {/* Operational Context Strip */}
-        <div className="mt-4 p-3 bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 rounded-md text-xs text-zinc-700 dark:text-zinc-300 flex items-start gap-2.5">
+        {/* Friendly explanation card */}
+        <div className="mt-4 p-4 rounded-lg bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800 text-xs text-zinc-600 dark:text-zinc-400 flex items-start gap-3">
           <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
           <div className="leading-relaxed">
-            <span className="font-semibold text-zinc-900 dark:text-zinc-100">Root Cause Hotspot #7:</span> When runs move (e.g. Line 1 → Line 2), physical pallets are dumped and consumed into hopper, but the WMS inventory reservation fails to issue the pallet out of the freezer sub-inventory. The AI agent matches completed production work orders against orphaned lot receipts and automates deduction approvals.
+            <strong className="text-zinc-900 dark:text-white">What is a "Ghost Lot"?</strong> When ice cream or ingredient batches move between processing lines (e.g., Line 1 to Line 2), pallets are physically consumed by hoppers, but warehouse scanning guns sometimes miss issuing them out of the blast freezer sub-inventory. Authorizing the deduction clears the orphaned record and balances inventory.
           </div>
         </div>
-      </motion.div>
+      </div>
 
-      {/* Lots Grid & Management Table with Scroll-In-View Transition */}
-      <motion.div
-        initial={{ opacity: 0, y: 14 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-        className="bg-white dark:bg-[#111317] border border-zinc-200 dark:border-zinc-800 rounded-lg p-5 shadow-xs"
-      >
-        <div className="flex items-center justify-between pb-4 border-b border-zinc-100 dark:border-zinc-800">
-          <div>
-            <h3 className="text-sm font-semibold font-display text-zinc-900 dark:text-white">
-              Lehigh Valley Sub-Inventory B Freezer Ledger
-            </h3>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-              Review orphaned lots and execute bulk or single-lot WMS deductions.
-            </p>
-          </div>
-        </div>
+      {/* Lot Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {lots.map((lot) => {
+          const isPending = lot.wmsStatus === 'Ghost - Pending Deduction';
 
-        <div className="mt-4 overflow-x-auto">
-          <table className="w-full text-xs text-left">
-            <thead>
-              <tr className="text-zinc-500 dark:text-zinc-400 border-b border-zinc-100 dark:border-zinc-800">
-                <th className="py-2.5 pl-2 font-medium">Freezer Lot #</th>
-                <th className="py-2.5 font-medium">SKU & Item</th>
-                <th className="py-2.5 font-medium text-right">Orphaned Qty</th>
-                <th className="py-2.5 font-medium">Original Run Date</th>
-                <th className="py-2.5 font-medium">Line Movement</th>
-                <th className="py-2.5 font-medium">WMS Status</th>
-                <th className="py-2.5 pr-2 font-medium text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/50 font-mono tabular-nums">
-              {lots.map((lot) => {
-                const isGhost = lot.wmsStatus === 'Ghost - Pending Deduction';
-                return (
-                  <motion.tr
-                    key={lot.lotId}
-                    layout
-                    className="hover:bg-zinc-50 dark:hover:bg-zinc-900/60 transition-colors"
+          return (
+            <motion.div
+              key={lot.lotId}
+              layout
+              className={`bg-white dark:bg-[#111317] border rounded-xl p-5 shadow-xs transition-all ${
+                isPending
+                  ? 'border-amber-200/90 dark:border-amber-950/60'
+                  : 'border-zinc-200/80 dark:border-zinc-800'
+              }`}
+            >
+              <div className="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-800">
+                <span className="font-mono font-bold text-xs text-zinc-900 dark:text-white">
+                  Lot {lot.lotId}
+                </span>
+                <span
+                  className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                    isPending
+                      ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
+                      : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
+                  }`}
+                >
+                  {isPending ? 'Ghost · Needs Deduction' : 'Deducted & Clean'}
+                </span>
+              </div>
+
+              <div className="mt-3">
+                <div className="text-sm font-bold text-zinc-900 dark:text-white font-display">
+                  {lot.description}
+                </div>
+                <div className="text-xs font-mono text-zinc-500 dark:text-zinc-400 mt-0.5">
+                  SKU: {lot.sku} · Consumed: {lot.usedDate}
+                </div>
+              </div>
+
+              <div className="mt-3 p-3 bg-zinc-50 dark:bg-zinc-900/50 rounded-lg border border-zinc-100 dark:border-zinc-800 text-xs">
+                <div className="flex items-center justify-between text-zinc-600 dark:text-zinc-400">
+                  <span>Line Transfer:</span>
+                  <span className="font-semibold text-zinc-900 dark:text-white">
+                    {lot.movedFromLine} → {lot.movedToLine}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between mt-1 text-zinc-600 dark:text-zinc-400">
+                  <span>Unissued Quantity:</span>
+                  <span className="font-mono font-bold text-zinc-900 dark:text-white">
+                    {lot.quantity.toLocaleString()} units
+                  </span>
+                </div>
+              </div>
+
+              <p className="mt-3 text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                {lot.impactNote}
+              </p>
+
+              <div className="mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800 flex justify-end">
+                {isPending ? (
+                  <button
+                    onClick={() => handleDeduct(lot.lotId)}
+                    className="w-full sm:w-auto px-4 py-2 text-xs font-semibold text-white bg-zinc-900 dark:bg-white dark:text-zinc-900 hover:bg-zinc-800 rounded-md transition-colors flex items-center justify-center gap-1.5 shadow-2xs"
                   >
-                    <td className="py-3 pl-2 font-bold text-zinc-900 dark:text-white">
-                      Lot {lot.lotId}
-                    </td>
-                    <td className="py-3 font-sans">
-                      <div className="font-bold text-zinc-900 dark:text-white font-mono">{lot.sku}</div>
-                      <div className="text-[11px] text-zinc-500">{lot.description}</div>
-                    </td>
-                    <td className="py-3 text-right font-bold text-zinc-900 dark:text-white">
-                      {lot.quantity.toLocaleString()} units
-                    </td>
-                    <td className="py-3 text-zinc-600 dark:text-zinc-400">
-                      {lot.usedDate}
-                    </td>
-                    <td className="py-3 text-zinc-700 dark:text-zinc-300">
-                      {lot.movedFromLine} → {lot.movedToLine}
-                    </td>
-                    <td className="py-3 font-sans">
-                      <span
-                        className={`text-[11px] font-semibold ${
-                          isGhost
-                            ? 'text-rose-600 dark:text-rose-400'
-                            : 'text-emerald-600 dark:text-emerald-400'
-                        }`}
-                      >
-                        {lot.wmsStatus}
-                      </span>
-                    </td>
-                    <td className="py-3 pr-2 text-right">
-                      {isGhost ? (
-                        <button
-                          onClick={() => handleDeduct(lot.lotId)}
-                          className="px-2.5 py-1 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white rounded transition-colors shadow-2xs"
-                        >
-                          Deduct from WMS
-                        </button>
-                      ) : (
-                        <span className="text-[11px] text-zinc-400 font-sans">Reconciled</span>
-                      )}
-                    </td>
-                  </motion.tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </motion.div>
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Deduct from WMS</span>
+                  </button>
+                ) : (
+                  <div className="flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400 font-semibold py-1">
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>Inventory Deducted</span>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
     </div>
   );
 };

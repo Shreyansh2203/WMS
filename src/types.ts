@@ -18,6 +18,8 @@ export interface HotspotMeta {
   realWorldExample: string;
 }
 
+export type AutomationPolicy = 'supervisor_approval' | 'auto_low_risk';
+
 export interface ReconciliationItem {
   id: string;
   hotspotNumber: HotspotNumber;
@@ -30,11 +32,13 @@ export interface ReconciliationItem {
   salesDate: string;
   mipsQty: number;
   wmsQty: number;
+  oracleQty?: number;
   varianceQty: number;
   unnecessaryProductionRiskQty: number;
   financialImpact: number;
   status: 'pending_approval' | 'approved_executed' | 'dismissed' | 'auto_reconciled';
   aiRecommendation: string;
+  rootCauseAnalysis?: string;
   proposedAction: string;
   affectedSystems: ('MIPS' | 'WMS' | 'ORACLE_ODI' | 'BUSS')[];
   detectedAt: string;
